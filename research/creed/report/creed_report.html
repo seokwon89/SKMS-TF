@@ -1,0 +1,365 @@
+<title>선언에서 작동으로</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 문서형 단일 칼럼(본문 폭 약 68자) + 데스크톱 좌측 목차. 판정 결과는 일치/불일치 신호색 칩으로 표기 */
+:root{
+  --bg:#f5f6f4; --surface:#ffffff; --fg:#1d2226; --muted:#5b646b; --line:#dde1dc;
+  --accent:#27566b; --accent-soft:#e3edf1;
+  --ok:#2f6e4f; --ok-soft:#e2efe7; --bad:#9b3b2e; --bad-soft:#f5e3df; --mix:#8a6a1f; --mix-soft:#f3ecd9;
+  --display:"Gowun Batang","Nanum Myeongjo",Georgia,serif;
+  --body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121517; --surface:#1a1f22; --fg:#e4e7e5; --muted:#9aa4a9; --line:#2c3337;
+  --accent:#8cc3d8; --accent-soft:#1f3139;
+  --ok:#8fd0ad; --ok-soft:#1c2e25; --bad:#ec9d8f; --bad-soft:#3a2420; --mix:#e0c27a; --mix-soft:#35301f;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121517; --surface:#1a1f22; --fg:#e4e7e5; --muted:#9aa4a9; --line:#2c3337;
+  --accent:#8cc3d8; --accent-soft:#1f3139;
+  --ok:#8fd0ad; --ok-soft:#1c2e25; --bad:#ec9d8f; --bad-soft:#3a2420; --mix:#e0c27a; --mix-soft:#35301f;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.75;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px;padding-block:32px 72px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr);gap:24px}}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;font-size:14px}
+nav.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+nav.toc a{color:var(--muted);text-decoration:none}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent)}
+nav.toc .lbl{font-size:12px;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;display:block}
+@media (max-width:900px){nav.toc{position:static}nav.toc ol{display:flex;flex-wrap:wrap;gap:6px 14px}}
+main{min-width:0}
+header.doc{border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:8px}
+.eyebrow{font-size:13px;letter-spacing:.08em;color:var(--accent);font-weight:600}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,5vw,50px);line-height:1.2;margin:.2em 0 .15em;text-wrap:balance}
+.sub{font-size:18px;color:var(--muted);max-width:44em;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.pill{font-size:12.5px;padding:3px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:var(--surface)}
+.pill.warn{border-color:var(--mix);color:var(--mix);background:var(--mix-soft)}
+section{padding-top:44px}
+h2{font-family:var(--display);font-size:28px;font-weight:700;margin:0 0 14px;text-wrap:balance}
+h3{font-size:17px;font-weight:600;margin:0 0 6px;text-wrap:balance}
+p{margin:0 0 14px;max-width:68ch}
+.lead{font-size:18px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:22px 0}
+@media (max-width:700px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.stat b{display:block;font-family:var(--mono);font-size:30px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat span{font-size:13.5px;color:var(--muted);line-height:1.5;display:block;margin-top:6px}
+.stat.ok b{color:var(--ok)} .stat.bad b{color:var(--bad)}
+.thesis{border-left:3px solid var(--accent);padding:4px 0 4px 18px;margin:20px 0;font-family:var(--display);font-size:20px;line-height:1.6;max-width:60ch}
+ol.steps{margin:0 0 14px;padding-left:1.4em;display:grid;gap:4px}
+.tbl{overflow-x:auto;margin:14px 0 18px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.55}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-weight:600;font-size:13px;color:var(--muted);letter-spacing:.02em;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:6px;white-space:nowrap}
+.chip.ok{color:var(--ok);background:var(--ok-soft)} .chip.bad{color:var(--bad);background:var(--bad-soft)} .chip.mix{color:var(--mix);background:var(--mix-soft)}
+.g{font-family:var(--mono);font-size:11.5px;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.finding{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;padding:18px 0;border-top:1px solid var(--line)}
+.finding .n{font-family:var(--mono);font-size:14px;color:var(--accent);padding-top:2px}
+.finding p{margin-bottom:8px}
+.note{font-size:14px;color:var(--muted)}
+.types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:800px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.types{grid-template-columns:minmax(0,1fr)}}
+.type{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.type code{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.type p{font-size:14px;margin:0}
+.type .cases{font-size:13px;color:var(--muted)}
+.qs{display:grid;gap:10px;counter-reset:q}
+.q{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:15px}
+.q .area{font-size:13px;color:var(--muted)}
+@media (max-width:520px){.q{grid-template-columns:minmax(0,1fr);gap:2px}}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.filters button{font:inherit;font-size:13px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.filters button:focus-visible,nav.toc a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.cards{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.card .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.card h3{margin:0}
+.card p{font-size:14px;margin:0}
+.card .tags{display:flex;flex-wrap:wrap;gap:6px}
+.caveat{background:var(--mix-soft);border:1px solid var(--line);border-radius:10px;padding:14px 18px;font-size:14.5px}
+.caveat p{margin:0 0 6px}
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="목차">
+  <span class="lbl">목차</span>
+  <ol>
+    <li><a href="#summary">요약</a></li>
+    <li><a href="#method">연구 방법</a></li>
+    <li><a href="#core">핵심 교차표</a></li>
+    <li><a href="#findings">발견 10</a></li>
+    <li><a href="#types">작동 유형 6</a></li>
+    <li><a href="#lessons">교훈 10</a></li>
+    <li><a href="#questions">진단 질문</a></li>
+    <li><a href="#cases">사례 18</a></li>
+    <li><a href="#limits">한계</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="doc">
+  <div class="eyebrow">글로벌 기업 18개 비교 사례연구 · 연구 보고서</div>
+  <h1>선언에서 작동으로</h1>
+  <p class="sub">Creed 기반 경영철학의 도입 목적, 결과, 그리고 성패를 가르는 조건</p>
+  <div class="meta">
+    <span class="pill">초안 v0.1 · 2026-09-30</span>
+    <span class="pill">심층 8 + 비교 10</span>
+    <span class="pill warn">원문 대조 전 · 검색 발췌 기반</span>
+    <span class="pill warn">단일 코더 판정</span>
+  </div>
+</header>
+
+<section id="summary">
+  <h2>요약</h2>
+  <p class="lead">기업이 가치 간 우선순위와 판단 원칙을 담은 신조(Creed)를 도입하면, 그 신조는 현장에서 실천되고 위기에서 판단 기준으로 작동하는가? 18개 기업의 결정적 사건을 같은 기준으로 비교했다.</p>
+  <div class="stats">
+    <div class="stat ok"><b>4/4</b><span>외부 가해형 위기(테러·독극물·충돌)에서 가치와 일치하는 선택</span></div>
+    <div class="stat bad"><b>1/17</b><span>자기 원인형 위기에서 외부 강제 없이 스스로 교정한 사례</span></div>
+    <div class="stat bad"><b>6/6</b><span>평가·보상이 신조와 반대 방향일 때 자기 원인 위기에서 불일치</span></div>
+    <div class="stat bad"><b>8/9</b><span>선행(기부·고통 분담) 전통이 있어도 자기 원인 위기에서 불일치·혼재</span></div>
+  </div>
+  <div class="thesis">신조가 작동하는지는 문서가 아니라 제도가 결정했다. 문서의 품질·길이·작성 방식·정관 명시는 위기 결과와 연관되지 않았다.</div>
+  <p>따라서 신조를 도입하거나 다시 세울 때는 순서가 중요하다.</p>
+  <ol class="steps">
+    <li>평가·보상·목표를 먼저 신조와 같은 방향으로 맞춘다.</li>
+    <li>위반이 일어나는 현장까지 닿는 발견 장치와 독립적인 경고 처리를 갖춘다.</li>
+    <li>보편적 약속의 범위와 예외 규칙을 설계한다.</li>
+    <li>문서 작성은 그다음이다.</li>
+  </ol>
+</section>
+
+<section id="method">
+  <h2>연구 방법</h2>
+  <p>이름(Creed, Way, Philosophy)이 아니라 기능으로 신조를 판정했다. 명문화, 우선순위 구조, 제도 연결, 지속성 네 가지 중 셋 이상을 충족하면 신조로 봤다. 기준에 못 미치는 Google과 Microsoft는 대조군으로 넣었다.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>지표</th><th>질문</th><th>판정</th></tr></thead>
+    <tbody>
+      <tr><td>A 현장 실천</td><td>현장이 신조를 일상 판단 기준으로 쓸 수 있게 설계·운영되었는가</td><td>영역별(운영·개발·영업·경영층 공시) 판정. 제도 연결은 방향(+/0/−)으로</td></tr>
+      <tr><td>B 위기 작동</td><td>가치와 단기 이익이 충돌한 결정적 사건에서 신조와 일치하는 선택을 했는가</td><td>위기 원인(외부 가해 / 자기 원인), 교정 동인(자발 / 외부 / 직원 압력)</td></tr>
+      <tr><td>B′ 가치 비용 결정</td><td>위기가 아닐 때 가치를 위해 스스로 이익을 포기했는가</td><td>비용의 성격(한정적 / 책임 인정 필요)</td></tr>
+    </tbody>
+  </table></div>
+  <p>근거 등급: <span class="g">I-A</span> 규제기관·법원·공시, 독립 출처 2개 이상 일치 · <span class="g">I-B</span> 독립 언론·학술 2개 이상 · <span class="g">I-C</span> 단일 출처·회사 자기서술 · <span class="g">I-D</span> 진행 중·미확인. 재무 성과는 판정 대상에서 뺐다. 신조와 재무 성과의 인과는 사례연구로 식별할 수 없다.</p>
+</section>
+
+<section id="core">
+  <h2>핵심 교차표</h2>
+  <p>평가·보상·목표(제도 정합)의 방향과 자기 원인 위기의 결과를 나란히 놓았다.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>제도 정합</th><th>사례</th><th>자기 원인 위기 결과</th></tr></thead>
+    <tbody>
+      <tr><td><span class="chip bad">반대 방향</span></td><td>Enron, Wells Fargo, VW, Toyota(물량 확대기), HP(2000년대), IBM(2013~18)</td><td><span class="chip bad">6/6 불일치</span></td></tr>
+      <tr><td><span class="chip ok">같은 방향</span></td><td>Patagonia</td><td><span class="chip ok">자발 교정</span></td></tr>
+      <tr><td><span class="chip ok">같은 방향</span></td><td>Tata(지주사), JAL(운영)</td><td><span class="chip mix">혼재</span> 계열사·개인 규율 영역에서 사건</td></tr>
+      <tr><td><span class="chip ok">같은 방향</span></td><td>Amazon, Microsoft</td><td><span class="chip bad">불일치</span> 성과 가치 편향, 해외 자회사</td></tr>
+      <tr><td><span class="chip ok">같은 방향</span></td><td>Ritz-Carlton</td><td><span class="chip mix">미시험</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">반대 방향은 실패의 거의 충분조건이었다. 같은 방향은 필요조건에 가깝지만 충분조건이 아니었다. 교차표는 연관을 보여줄 뿐 인과를 증명하지 않는다.</p>
+</section>
+
+<section id="findings">
+  <h2>발견 10</h2>
+
+  <div class="finding"><div class="n">01</div><div>
+    <h3>외부 가해형 위기에서는 작동하고, 자기 원인형 위기에서 시험받는다</h3>
+    <p>외부 가해형 4건(J&amp;J 1982, Ritz-Carlton 2009, Taj 2008, JAL 2024)은 모두 일치했다. 자기 원인형은 17개 사례 중 1건만 스스로 교정했다. 같은 J&amp;J가 1982년 독극물 사건에서는 전국 회수를, 2009년 품질 결함 때는 공식 리콜 없이 재고를 사들인 "팬텀 리콜"을 했다.</p>
+    <p class="note">J&amp;J 1982의 신조 인용은 주로 사후 서술이고, JAL 하네다 대응은 별도 안전 체계의 효과일 수 있다. <span class="g">I-A</span> <span class="g">I-B</span></p>
+  </div></div>
+
+  <div class="finding"><div class="n">02</div><div>
+    <h3>제도가 반대 방향이면 예외 없이 작동하지 않았다</h3>
+    <p>Wells Fargo의 가치 문서는 "상품 밀어내기와 무관하다"고 했지만, 구호는 "고객 1인당 8개 상품"이었다. Enron의 "존중"은 무자비함을 금지했지만, 평가는 매출 기준 강제 배분과 하위 15% 퇴출이었다. 반대로 Microsoft(강제 순위 평가 폐지, 2013)와 Siemens(준법을 평가에 반영)는 제도를 먼저 바꿨다.</p>
+    <p class="note"><span class="g">I-A</span></p>
+  </div></div>
+
+  <div class="finding"><div class="n">03</div><div>
+    <h3>자발 교정은 스스로 찾아내는 장치가 위반 현장까지 닿을 때 나타났다</h3>
+    <p>Patagonia는 2011년 자체 감사로 2차 협력사 이주노동자의 과도한 중개 수수료를 찾았다. 2014년 수수료 금지와 환급 기준을 만들었고, 2015년 공시 의무 없이 공개했다. 반면 가치 점검 전담 조직이 있던 Novo Nordisk의 해외 계약·영업 위반은 외부가 발견했다.</p>
+    <p class="note">긍정 사례 1건에 기반한 가설. 발견부터 공개까지 4년이 걸렸고 잔여 문제가 보고되었다. <span class="g">I-B</span> <span class="g">I-A</span></p>
+  </div></div>
+
+  <div class="finding"><div class="n">04</div><div>
+    <h3>경고 처리가 독립적이지 않으면 신조는 무너진다</h3>
+    <p>Enron 회장은 부사장의 회계 경고를 이해상충이 있는 자문 로펌에 맡겼고, 결론은 "추가 조사 불필요"였다. Wells Fargo에서는 윤리 핫라인 신고 뒤 해고되었다는 증언이 있고, 노동부가 복직을 명령했다.</p>
+    <p class="note"><span class="g">I-A</span></p>
+  </div></div>
+
+  <div class="finding"><div class="n">05</div><div>
+    <h3>설계에서 차이를 만든 것은 약속의 범위와 예외 규칙이었다</h3>
+    <p>"고용"이나 "모든 구성원" 같은 보편적 약속은 구조조정 때 가치 위반으로 받아들여졌다(8개 사례). Enron 이사회는 윤리강령 이해상충 조항을 두 번 면제했고, HP 이사회는 2010년 CEO에게 윤리 기준을 적용했다. 우선순위 규칙은 있어도 인센티브가 뒤집었다(Toyota). 없으면 뒤늦게 추가된 가치가 밀렸다(Amazon).</p>
+    <p class="note"><span class="g">I-A</span> <span class="g">I-B</span></p>
+  </div></div>
+
+  <div class="finding"><div class="n">06</div><div>
+    <h3>그룹 경영철학은 지주사 문서와 계약만으로 계열사를 바꾸지 못했다</h3>
+    <p>Toyota는 계열사 부정이 드러난 뒤 그룹 비전을 냈다. Tata는 사건 전부터 브랜드 사용 계약에 윤리강령 채택을 의무화했다. Mahindra는 공통 목적 중심의 연방형이다. 세 그룹 모두 계열사 사건을 겪었다. 계열사 행동은 그 계열사의 평가·목표 체계와 발견 장치가 결정하는 것으로 보인다.</p>
+    <p class="note"><span class="g">I-A</span> <span class="g">I-B</span></p>
+  </div></div>
+
+  <div class="finding"><div class="n">07</div><div>
+    <h3>소유 구조의 고정은 가치 보장이 아니라 장기 소유자의 개입 수단이다</h3>
+    <p>Tata 신탁(지분 66%)은 회장을 교체할 수 있었지만 지배구조 분쟁도 반복되고 있다. Novo 재단은 성과 부진을 이유로 이사회 과반을 바꿨다. Google 창업자는 차등의결권이 "Don't be evil"을 지키기 위한 구조라고 했지만, 창업자 지배 아래서 모토와 AI 무기 원칙이 삭제되었다.</p>
+    <p class="note">Tata의 2026년 9월 분쟁은 진행 중. <span class="g">I-A</span> <span class="g">I-D</span></p>
+  </div></div>
+
+  <div class="finding"><div class="n">08</div><div>
+    <h3>참여형 작성은 정당성을 만들지만 지속성은 보장하지 않는다</h3>
+    <p>IBM ValuesJam(2003)에는 약 5만 명이 72시간 동안 참여했고, "가치는 벽에만 있다"는 냉소까지 드러내고 반영했다. 그러나 10년 뒤 고령 직원 차별 판정이 나왔다. 같은 시기 평가 제도는 새 가치와 긴장 관계였다.</p>
+    <p class="note">차별 판정은 규제기관 판단이며 법원 확정 판결이 아니다. <span class="g">I-A</span> <span class="g">I-B</span></p>
+  </div></div>
+
+  <div class="finding"><div class="n">09</div><div>
+    <h3>선행을 잘하는 회사가 잘못도 잘 인정하는 것은 아니다</h3>
+    <p>Merck는 1987년 강변실명증 치료제를 무상 기부했지만 Vioxx 사건에서 불일치했다. HP는 1970년 해고 대신 고통을 분담했지만 2006년 이사회가 불법 뒷조사를 했다. 선행은 비용이 한정적이고 평판으로 보상받는다. 잘못 인정은 비용이 끝이 없고 처벌을 받는다.</p>
+    <p class="note"><span class="g">I-A</span></p>
+  </div></div>
+
+  <div class="finding"><div class="n">10</div><div>
+    <h3>작동 여부는 "문제를 인지한 뒤 첫 행동"에서 드러난다</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>사례</th><th>인지 → 인정</th><th>그 사이</th></tr></thead>
+      <tbody>
+        <tr><td>Toyota</td><td class="num">약 4개월</td><td>결함 인지 후 미신고. 이후 기만 인정</td></tr>
+        <tr><td>VW</td><td class="num">1년 이상</td><td>외부 시험 결과 반박, 효과 없는 리콜</td></tr>
+        <tr><td>Merck</td><td class="num">약 4.5년</td><td>위험 신호 이후 판촉 지속</td></tr>
+        <tr><td>Wells Fargo</td><td class="num">약 14년</td><td>판매 목표 유지</td></tr>
+        <tr><td>Patagonia</td><td class="num">교정 즉시 · 공개 4년</td><td>기준 개발, 환급</td></tr>
+      </tbody>
+    </table></div>
+    <p>불일치 사례는 "인지 → 부인·축소 → 외부 강제 → 인정"의 경로를 밟았다. 설문 참여율(J&amp;J 95%)과 외부 평판 순위(Enron "가장 혁신적인 기업" 6년 연속)는 이 경로를 탐지하지 못했다.</p>
+  </div></div>
+</section>
+
+<section id="types">
+  <h2>작동 유형 6</h2>
+  <p>같은 기업도 시기와 영역에 따라 유형이 바뀌었다. 판정 단위는 기업이 아니라 "시기 × 영역"이다.</p>
+  <div class="types">
+    <div class="type"><code>T1</code><h3>선언형</h3><p>문서는 있으나 제도가 반대 방향. 자기 원인 위기에서 전면 불일치.</p><span class="cases">Enron, Wells Fargo, VW(이전)</span></div>
+    <div class="type"><code>T2</code><h3>제도 결합·성과 편향형</h3><p>제도에 강하게 연결됐지만 성과 가치 중심. 안전·공정 가치에서 불일치.</p><span class="cases">Amazon, Toyota(물량기), IBM(2013~18)</span></div>
+    <div class="type"><code>T3</code><h3>운영 내재형</h3><p>좁고 행동적이며 일상 의례로 내재화. 외부 가해 위기에 강하고 범위 밖 딜레마에 약함.</p><span class="cases">Ritz-Carlton, Taj, JAL(운영)</span></div>
+    <div class="type"><code>T4</code><h3>구조 고정형</h3><p>소유·계약·정관으로 고정. 결과가 수호자의 판단에 따라 갈림.</p><span class="cases">Tata, Novo Nordisk, Patagonia, Google</span></div>
+    <div class="type"><code>T5</code><h3>재건형</h3><p>위기 뒤 사람·평가·감독을 교체. 외부 감독 아래 재건, 경고 처리가 지속성을 좌우.</p><span class="cases">Siemens, VW(이후), Microsoft, JAL</span></div>
+    <div class="type"><code>T6</code><h3>발견·교정형</h3><p>스스로 찾아 스스로 고침. 18개 중 유일.</p><span class="cases">Patagonia(2011~15)</span></div>
+  </div>
+</section>
+
+<section id="lessons">
+  <h2>교훈 10</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>#</th><th>교훈</th><th>근거</th><th>적용 경계</th></tr></thead>
+    <tbody>
+      <tr><td class="num">L1</td><td>평가·보상·목표를 먼저 신조와 같은 방향으로 맞춘다</td><td><span class="chip ok">강</span> 6/6</td><td>정합만으로는 부족</td></tr>
+      <tr><td class="num">L2</td><td>제도에 "어떤 가치를" 연결할지 설계한다. 성과 가치만 연결하면 안전·공정이 밀린다</td><td><span class="chip mix">중</span></td><td>가치 간 우선순위와 함께</td></tr>
+      <tr><td class="num">L3</td><td>스스로 찾는 장치를 영업·해외·계열사·협력사까지 닿게 한다</td><td><span class="chip mix">약~중</span></td><td>긍정 사례 1건</td></tr>
+      <tr><td class="num">L4</td><td>경고는 이해관계 없는 주체가 처리한다</td><td><span class="chip ok">중~강</span></td><td></td></tr>
+      <tr><td class="num">L5</td><td>최고 의사결정기구에도 예외 없이 적용하고, 예외는 공개한다</td><td><span class="chip mix">중</span></td><td>2 사례 + 법제</td></tr>
+      <tr><td class="num">L6</td><td>보편적 약속은 구조조정 원칙과 함께 설계한다. 리더의 고통 분담은 약속과 결합될 때만 효과가 있다</td><td><span class="chip ok">중~강</span></td><td></td></tr>
+      <tr><td class="num">L7</td><td>그룹 경영철학은 계열사의 평가·목표·발견 장치까지 내려가야 한다</td><td><span class="chip mix">중</span></td><td>그룹 3 사례</td></tr>
+      <tr><td class="num">L8</td><td>소유 구조의 고정이 가치를 보장하지 않는다. 수호자의 판단과 결속이 새 위험이 된다</td><td><span class="chip mix">중</span></td><td>Tata 분쟁 진행 중</td></tr>
+      <tr><td class="num">L9</td><td>선행의 전통으로 위기 대응 능력을 추정하지 않는다</td><td><span class="chip ok">강</span> 8/9</td><td></td></tr>
+      <tr><td class="num">L10</td><td>작동 여부는 "인지 후 첫 행동"으로 측정한다. 설문·평판·순위로는 탐지되지 않는다</td><td><span class="chip ok">중~강</span></td><td></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="questions">
+  <h2>진단 질문 (시안)</h2>
+  <p class="note">연구 결과를 거꾸로 적용해 만든 시안이다. 검증된 진단 도구가 아니며, 쓰기 전에 파일럿 적용과 수정이 필요하다.</p>
+  <div class="qs">
+    <div class="q"><span class="area">제도 정합 · L1 L2</span><span>핵심 성과 목표 중 신조의 우선순위와 충돌하는 목표가 있는가? 충돌하면 평가에서 어느 쪽이 이기는가?</span></div>
+    <div class="q"><span class="area">제도 정합 · L1</span><span>신조를 어기고 좋은 성과를 낸 사람이 승진한 사례가 있는가?</span></div>
+    <div class="q"><span class="area">발견 · L3 L7</span><span>자체 점검이 영업 현장, 해외 법인, 계열사, 협력사·외주까지 닿는가?</span></div>
+    <div class="q"><span class="area">발견 · L3 L10</span><span>최근 3년간 외부보다 먼저 스스로 찾아낸 위반은 몇 건인가?</span></div>
+    <div class="q"><span class="area">경고 처리 · L4</span><span>경고를 조사하는 주체가 신고 대상 조직과 이해관계가 없는가?</span></div>
+    <div class="q"><span class="area">경고 처리 · L4</span><span>신고자의 이후 인사 기록을 추적하는가?</span></div>
+    <div class="q"><span class="area">예외 · L5</span><span>최고경영진·이사회에 대한 예외 승인 절차와 공개 규칙이 있는가?</span></div>
+    <div class="q"><span class="area">약속 범위 · L6</span><span>"구성원", "고용" 같은 보편적 약속에 구조조정 시 원칙이 명시되어 있는가?</span></div>
+    <div class="q"><span class="area">약속 범위 · L6</span><span>구조조정 때 경영진의 고통 분담이 무엇을 약속하는지 명확한가?</span></div>
+    <div class="q"><span class="area">측정 · L10</span><span>문제를 인지한 뒤 첫 행동까지의 시간과 내용을 기록하고 검토하는가?</span></div>
+    <div class="q"><span class="area">측정 · L10</span><span>신조 실천을 설문 참여율이나 평판 순위 외의 행동 지표로 보는가?</span></div>
+    <div class="q"><span class="area">수호 · L8</span><span>신조를 지키는 주체(이사회, 창업 가문, 재단 등)가 어떤 조건에서 개입하는지 정해져 있는가?</span></div>
+  </div>
+</section>
+
+<section id="cases">
+  <h2>사례 18</h2>
+  <div class="filters" role="group" aria-label="사례 층 필터">
+    <button type="button" id="f-all" data-f="all" aria-pressed="true">전체</button>
+    <button type="button" id="f-deep" data-f="deep" aria-pressed="false">심층 8</button>
+    <button type="button" id="f-comp" data-f="comp" aria-pressed="false">비교 10</button>
+  </div>
+  <div class="cards" id="cards"></div>
+</section>
+
+<section id="limits">
+  <h2>한계</h2>
+  <div class="caveat">
+    <p><b>원문 미대조.</b> 연구 환경에서 다수의 원문 사이트가 차단되어, 모든 사실은 검색 결과 발췌와 복수 출처 교차 확인에 기반한다. 인용 전 원문 대조가 필요하다.</p>
+    <p><b>단일 코더.</b> 18개 사례 판정을 연구자 1인이 했다. 2~3인의 독립 코딩과 불일치 항목 토론을 권한다.</p>
+    <p><b>공개 사건 편향.</b> 조용히 교정된 사건은 관찰되지 않는다. 자발 교정은 실제보다 적게 잡혔을 가능성이 크다.</p>
+    <p><b>일반화 범위.</b> 표본은 미국 11, 일본 2, 인도 2, 유럽 3개 대기업이다. 재무 성과와의 관계는 판정하지 않았다.</p>
+  </div>
+</section>
+
+<footer>
+  근거 문서: SKMS-TF 저장소 <code>research/creed/</code> 01~23 (사례 파일, 코딩 매트릭스, 교차 분석, 보고서 초안). 주요 문헌: Guiso·Sapienza·Zingales(2015, JFE), Graham 외(2022, JFE), Sull·Turconi·Sull(2020, MIT SMR), Rosenzweig(2007).
+</footer>
+</main>
+</div>
+
+<script>
+const CASES=[
+ ["J&J","deep","1943 Credo(고객→직원→지역사회→주주). 1982 전국 회수 / 2009 팬텀 리콜, 2011 FDA 동의명령","T3→T1","I-A · I-B"],
+ ["Toyota","deep","2001 Toyota Way. 결함 인지 후 미신고, 2014 DOJ 12억 달러. 계열사 Hino·Daihatsu 부정","T3+T2","I-A"],
+ ["Kyocera/JAL","deep","2011 JAL Philosophy와 부문 채산 관리 동시 도입. 재무 조치와 분리 불가. 165명 해고 판결, 조종사 음주 반복","T5","I-A · I-B"],
+ ["Enron","deep","64쪽 윤리강령. 이사회 예외 승인 2회, 매출 기준 강제 배분, 내부 경고 무력화","T1","I-A"],
+ ["Ritz-Carlton","deep","Gold Standards, 매일 라인업, 현장 재량. 자기 원인 위기는 미시험","T3","I-A · I-C"],
+ ["HP","deep","1957 목표 문서. 1970 고통 분담 / 2001 무급휴가 후 해고, 2006 불법 뒷조사, 2010 CEO에 기준 적용","T3→T1","I-A"],
+ ["IBM","deep","1962 3대 신념 → 1993 재해석 → 2003 ValuesJam. 2011 해외 뇌물 합의, 2020 고령 차별 판정","T2→T5","I-A · I-B · I-C"],
+ ["Tata","deep","신탁 66% + 브랜드 계약 + 윤리 조직. Taj 2008 / TCS 영업비밀, Air India 위반·자진 신고. 2026 지배구조 분쟁","T4","I-A · I-D"],
+ ["Merck","comp","\"Medicine is for the people\". 1987 무상 기부 / Vioxx, 2011 유죄 인정","B′ 강 · B 약","I-A"],
+ ["Patagonia","comp","2011 자체 감사 → 2014 기준 → 2015 공개. 2022 소유 이전","T6+T4","I-B"],
+ ["Novo Nordisk","comp","가치 점검 전담 조직, 정관에 3대 책임. 해외 리베이트·판촉 위반은 외부 교정","T4","I-A"],
+ ["Mahindra","comp","연방형, Rise. Satyam 지배구조 재건 / Finance 외주 사망 사고, 중앙은행 제재","T4 대조","I-A · I-B"],
+ ["Wells Fargo","comp","\"상품 밀어내기와 무관\" vs \"고객 1인당 8개\". 신고자 보복 증언, 30억 달러","T1","I-A"],
+ ["Volkswagen","comp","외부 발견 후 부인, 형사 유죄 43억 달러. 이사회 Integrity 담당, 외부 감독관","T1→T5","I-A"],
+ ["Siemens","comp","약 16억 달러 합의. 임원 대거 교체, 준법을 평가에 반영. 경고 처리 약점 보도","T5","I-A · I-C"],
+ ["Amazon","comp","16개 원칙, 채용 직결, \"모든 원칙 동등\". 2021 직원 원칙 추가, 상원 안전 보고서","T2","I-A"],
+ ["Microsoft","comp","2013 강제 순위 평가 폐지 → 문화 전환. 헝가리 뇌물 합의, 2025 서비스 차단과 항의자 해고","T5 (대조군)","I-A · I-B"],
+ ["Google","comp","2004 \"Don't be evil\" + 차등의결권. 2018 모토 삭제, 2025 AI 무기 원칙 삭제","T4 (대조군)","I-A"]
+];
+const box=document.getElementById("cards");
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function render(f){
+  box.innerHTML=CASES.filter(c=>f==="all"||c[1]===f).map(c=>`<article class="card"><div class="top"><h3>${esc(c[0])}</h3><span class="g">${c[1]==="deep"?"심층":"비교"}</span></div><p>${esc(c[2])}</p><div class="tags"><span class="chip mix">${esc(c[3])}</span><span class="g">${esc(c[4])}</span></div></article>`).join("");
+}
+let cur="all";
+try{const s=localStorage.getItem("creed-filter");if(s)cur=s}catch(e){}
+document.querySelectorAll(".filters button").forEach(b=>{
+  b.setAttribute("aria-pressed",String(b.dataset.f===cur));
+  b.addEventListener("click",()=>{
+    cur=b.dataset.f;
+    document.querySelectorAll(".filters button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+    render(cur);
+    try{localStorage.setItem("creed-filter",cur)}catch(e){}
+  });
+});
+render(cur);
+</script>
