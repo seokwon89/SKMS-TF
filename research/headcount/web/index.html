@@ -1,0 +1,646 @@
+<title>SUPEX 멤버사 임직원 현황</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;600;700&display=swap">
+<style>
+/* Layout: 전면 타일이 밝음↔어두움으로 교차하고 색 전환이 섹션 구분선이 된다. 데이터가 '제품'이고 UI는 물러난다. */
+:root{
+  --primary:#0066cc; --primary-focus:#0071e3; --primary-on-dark:#2997ff; --series-2:#4fa3f0;
+  --ink:#1d1d1f; --on-dark:#ffffff; --body-muted:#cccccc; --ink-80:#333333; --ink-48:#7a7a7a;
+  --divider-soft:#f0f0f0; --hairline:#e0e0e0; --grid:#ececee;
+  --canvas:#ffffff; --parchment:#f5f5f7; --pearl:#fafafc;
+  --tile-1:#272729; --tile-2:#2a2a2c; --tile-3:#252527; --black:#000000;
+  --frost:rgba(245,245,247,.8); --line-a:rgba(0,0,0,.08); --line-dark:rgba(255,255,255,.14);
+  --shadow-product:rgba(0,0,0,.22) 3px 5px 30px 0;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Noto Sans KR",system-ui,sans-serif;
+  --text:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Noto Sans KR",system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r-sm:8px; --r-md:11px; --r-lg:18px; --r-pill:9999px;
+  --ease:cubic-bezier(.25,.1,.25,1);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(52px + env(safe-area-inset-top,0px))}
+body{background:var(--canvas);color:var(--ink);font-family:var(--text);font-size:17px;line-height:1.47;letter-spacing:-.374px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--frost)}
+:focus-visible{outline:2px solid var(--primary-focus);outline-offset:2px}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.num,.tab{font-variant-numeric:tabular-nums}
+
+/* nav */
+.gnav{background:var(--black);color:var(--on-dark);height:44px}
+.gnav .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.gnav b{font-size:12px;font-weight:600;letter-spacing:-.12px;white-space:nowrap}
+.gnav span{font-size:12px;letter-spacing:-.12px;color:#bdbdbd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.subnav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--frost);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line-a)}
+.subnav .wrap{height:52px;display:flex;align-items:center;gap:18px}
+.subnav .cat{font-family:var(--display);font-size:21px;font-weight:600;letter-spacing:.231px;white-space:nowrap}
+.subnav .links{display:flex;gap:18px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.subnav .links::-webkit-scrollbar{display:none}
+.subnav .links a{font-size:12px;letter-spacing:-.12px;color:var(--ink-80);text-decoration:none;white-space:nowrap;padding:6px 0;position:relative}
+.subnav .links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink);transform:scaleX(0);transition:transform .3s var(--ease)}
+.subnav .links a.on{color:var(--ink)}
+.subnav .links a.on::after{transform:scaleX(1)}
+.subnav .cta{flex:none;background:var(--primary);color:#fff;border-radius:var(--r-pill);padding:5px 14px;font-size:12px;text-decoration:none;letter-spacing:-.12px;transition:transform .15s var(--ease)}
+.subnav .cta:active{transform:scale(.95)}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;background:var(--primary);width:0}
+
+/* tiles */
+.tile{padding-block:80px;position:relative}
+.t-light{background:var(--canvas)}
+.t-parch{background:var(--parchment)}
+.t-dark{background:var(--tile-1);color:var(--on-dark)}
+.t-dark2{background:var(--tile-2);color:var(--on-dark)}
+.eyebrow{font-size:14px;font-weight:600;letter-spacing:-.224px;color:var(--ink-48);margin:0 0 10px}
+.t-dark .eyebrow,.t-dark2 .eyebrow{color:var(--body-muted)}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
+.h-lg{font-size:40px;font-weight:600;line-height:1.1;letter-spacing:-.4px}
+.lead-airy{font-size:21px;font-weight:300;line-height:1.5;margin:16px 0 0;max-width:36em;color:var(--ink-80)}
+.t-dark .lead-airy,.t-dark2 .lead-airy,.t-dark .muted,.t-dark2 .muted{color:var(--body-muted)}
+.muted{color:var(--ink-80)}
+.head{max-width:780px;margin:0 auto 44px;text-align:center}
+.head .lead-airy{margin-left:auto;margin-right:auto}
+.rv{transition:transform .9s var(--ease)}
+.rv.pre{transform:translateY(24px)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}.rv.pre{transform:none}}
+
+/* buttons, chips, seg */
+.btn{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--primary);color:#fff;border-radius:var(--r-pill);padding:11px 22px;font-size:17px;letter-spacing:-.374px;text-decoration:none;transition:transform .15s var(--ease)}
+.btn:active{transform:scale(.95)}
+.btn.ghost{background:transparent;color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary)}
+.t-dark .btn.ghost,.t-dark2 .btn.ghost{color:var(--primary-on-dark);box-shadow:inset 0 0 0 1px var(--primary-on-dark)}
+.seg{display:inline-flex;background:#e8e8ed;border-radius:var(--r-pill);padding:3px;position:relative}
+.t-dark .seg,.t-dark2 .seg{background:#3a3a3c}
+.seg button{border:0;background:transparent;padding:7px 16px;border-radius:var(--r-pill);font-size:14px;letter-spacing:-.224px;position:relative;z-index:1;white-space:nowrap}
+.seg .pill{position:absolute;top:3px;bottom:3px;left:3px;border-radius:var(--r-pill);background:var(--canvas);transition:left .3s var(--ease),width .3s var(--ease);box-shadow:0 0 0 1px var(--line-a)}
+.t-dark .seg .pill,.t-dark2 .seg .pill{background:#636366;box-shadow:none}
+.chip{border:0;background:var(--canvas);border-radius:var(--r-pill);box-shadow:inset 0 0 0 1px var(--hairline);padding:8px 14px;font-size:14px;letter-spacing:-.224px;transition:transform .15s var(--ease);white-space:nowrap}
+.chip:active{transform:scale(.95)}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff;box-shadow:none}
+.toggle{display:inline-flex;align-items:center;gap:10px;font-size:14px;letter-spacing:-.224px;border:0;background:transparent;padding:4px 0}
+.toggle .sw{width:42px;height:26px;border-radius:13px;background:#d2d2d7;position:relative;transition:background .25s}
+.toggle .sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .25s var(--ease)}
+.toggle[aria-pressed="true"] .sw{background:var(--primary)}
+.toggle[aria-pressed="true"] .sw::after{transform:translateX(16px)}
+.controls{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:center;margin-bottom:28px}
+
+/* status marks */
+.st{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;letter-spacing:-.12px;white-space:nowrap}
+.st i{width:10px;height:10px;border-radius:50%;flex:none}
+.st.done i{background:var(--primary)}
+.st.incl i{background:transparent;box-shadow:inset 0 0 0 2px var(--primary)}
+.st.todo i{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ink-48);border:0}
+.st.todo{color:var(--ink-48)}
+
+/* hero */
+.hero{padding-block:76px 72px;text-align:center}
+.hero .big{font-family:var(--display);font-size:120px;font-weight:600;line-height:1;letter-spacing:-3px;margin:8px 0 0}
+.hero .big small{font-size:44px;letter-spacing:-.5px;margin-left:6px}
+.hero .lead{font-family:var(--display);font-size:28px;line-height:1.14;letter-spacing:.196px;margin:18px auto 0;max-width:24em}
+.coverage{max-width:760px;margin:48px auto 0;text-align:left}
+.cbar{display:flex;gap:2px;height:44px}
+.cbar button{border:0;padding:0;height:100%;transition:transform .2s var(--ease),filter .2s;position:relative}
+.cbar button:first-child{border-radius:var(--r-sm) 0 0 var(--r-sm)}
+.cbar button:last-child{border-radius:0 var(--r-sm) var(--r-sm) 0}
+.cbar button:hover,.cbar button[aria-pressed="true"]{transform:scaleY(1.12)}
+.cbar .c-done{background:var(--primary)}
+.cbar .c-incl{background:var(--series-2)}
+.cbar .c-todo{background:repeating-linear-gradient(135deg,#e3e3e8 0 6px,#f0f0f3 6px 12px)}
+.clegend{display:flex;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap}
+.clegend div{font-size:14px;letter-spacing:-.224px;color:var(--ink-80)}
+.clegend b{font-family:var(--display);font-size:28px;font-weight:600;color:var(--ink);display:block;letter-spacing:-.3px}
+.cnote{margin-top:14px;font-size:14px;color:var(--ink-80);min-height:1.47em;letter-spacing:-.224px}
+.ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.stat{text-align:center;padding:8px}
+.stat .v{font-family:var(--display);font-size:44px;font-weight:600;letter-spacing:-.6px;line-height:1.05}
+.stat .v small{font-size:20px;font-weight:600}
+.stat p{margin:10px 0 0;font-size:14px;letter-spacing:-.224px;color:var(--ink-80)}
+
+/* bar chart */
+.chart{position:relative}
+.legend{display:flex;gap:18px;justify-content:center;font-size:14px;letter-spacing:-.224px;color:var(--ink-80);margin-bottom:12px;min-height:21px}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.bars{display:grid;gap:6px}
+.brow{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;align-items:center;min-height:36px;border-radius:var(--r-sm);padding:2px 0;cursor:default}
+.brow .nm{font-size:14px;letter-spacing:-.224px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brow .nm small{display:block;font-size:11px;color:var(--ink-48);letter-spacing:-.08px}
+.track{position:relative;height:24px;display:flex;align-items:center}
+.track .gl{position:absolute;top:-6px;bottom:-6px;width:1px;background:var(--grid)}
+.fill{display:flex;gap:2px;height:20px;transition:width .7s var(--ease);position:relative;z-index:1}
+.fill span{height:100%;transition:flex-basis .5s var(--ease),width .5s var(--ease)}
+.fill span:last-child{border-radius:0 4px 4px 0}
+.fill .s1{background:var(--primary)}
+.fill .s2{background:var(--series-2)}
+.fill.single .s2{display:none}
+.fill.single .s1{border-radius:0 4px 4px 0}
+.bval{position:relative;z-index:1;margin-left:8px;font-size:14px;font-weight:600;letter-spacing:-.224px;white-space:nowrap}
+.brow:hover .nm{color:var(--primary)}
+.brow.dim{opacity:.35}
+.axis{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;margin-top:6px}
+.axis .ticks{position:relative;height:18px}
+.axis .ticks span{position:absolute;transform:translateX(-50%);font-size:11px;color:var(--ink-48);letter-spacing:-.08px;white-space:nowrap}
+.tip{position:fixed;z-index:70;pointer-events:none;background:var(--canvas);color:var(--ink);border-radius:var(--r-md);box-shadow:0 0 0 1px var(--line-a),0 8px 24px rgba(0,0,0,.12);padding:12px 14px;font-size:13px;letter-spacing:-.2px;min-width:180px;opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s}
+.tip.show{opacity:1;transform:none}
+.tip b{display:block;font-size:14px;margin-bottom:6px}
+.tip .r{display:flex;justify-content:space-between;gap:16px}
+.tip .r i{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:6px}
+.chartnote{font-size:12px;color:var(--ink-48);text-align:center;margin-top:18px;letter-spacing:-.12px}
+.tablewrap{overflow-x:auto;margin-top:24px;border-radius:var(--r-lg);box-shadow:0 0 0 1px var(--hairline);background:var(--canvas)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:14px;letter-spacing:-.224px}
+th,td{padding:11px 14px;text-align:right;border-bottom:1px solid var(--divider-soft);white-space:nowrap}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
+thead th{font-size:12px;color:var(--ink-48);font-weight:600;background:var(--pearl)}
+tfoot td{font-weight:600;border-bottom:0}
+
+/* structure diagram */
+.struct{display:grid;gap:22px}
+.node{background:var(--tile-3);border-radius:var(--r-lg);box-shadow:inset 0 0 0 1px var(--line-dark);padding:20px 22px;text-align:left;border:0;color:var(--on-dark);transition:box-shadow .2s,transform .15s var(--ease);width:100%}
+.node:active{transform:scale(.98)}
+.node[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--primary-on-dark)}
+.node .t{font-size:14px;color:var(--body-muted);letter-spacing:-.224px}
+.node .v{font-family:var(--display);font-size:34px;font-weight:600;letter-spacing:-.4px;margin-top:2px}
+.node .v small{font-size:16px;color:var(--body-muted);font-weight:400;margin-left:4px}
+.node .d{font-size:13px;color:var(--body-muted);letter-spacing:-.2px;margin-top:6px}
+.parent{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;background:rgba(255,255,255,.04);border-radius:22px;padding:14px;box-shadow:inset 0 0 0 1px var(--line-dark)}
+.parent .cap{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:4px 6px 0;flex-wrap:wrap}
+.parent .cap b{font-family:var(--display);font-size:21px;font-weight:600}
+.parent .cap span{font-size:14px;color:var(--body-muted)}
+.links-v{display:flex;justify-content:center;gap:0;height:28px;position:relative}
+.links-v::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line-dark)}
+.kids{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.rule{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:8px}
+.rule div{font-size:14px;color:var(--body-muted);letter-spacing:-.224px;padding:16px 18px;border-radius:var(--r-lg);background:rgba(255,255,255,.04)}
+.rule b{display:block;color:var(--on-dark);font-size:15px;margin-bottom:4px}
+.explain{margin-top:6px;padding:18px 22px;border-radius:var(--r-lg);background:rgba(41,151,255,.1);font-size:15px;color:var(--on-dark);letter-spacing:-.24px;min-height:3.2em}
+
+/* member grid */
+.filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.search{display:flex;align-items:center;gap:10px;background:var(--canvas);border-radius:var(--r-pill);box-shadow:inset 0 0 0 1px var(--line-a);height:44px;padding:0 20px;width:100%;max-width:420px;margin:0 auto 14px}
+.search svg{flex:none;color:var(--ink-48)}
+.search input{border:0;outline:0;background:transparent;font:inherit;color:var(--ink);width:100%;min-width:0}
+.search:focus-within{box-shadow:inset 0 0 0 2px var(--primary-focus)}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:28px}
+.mcard{background:var(--canvas);border:0;border-radius:var(--r-lg);box-shadow:0 0 0 1px var(--hairline);padding:20px;text-align:left;display:flex;flex-direction:column;gap:10px;min-width:0;transition:transform .2s var(--ease),box-shadow .2s}
+.mcard:hover{transform:translateY(-3px)}
+.mcard:active{transform:scale(.97)}
+.mcard[aria-pressed="true"]{box-shadow:0 0 0 2px var(--primary-focus)}
+.mcard .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.mcard .no{font-size:12px;color:var(--ink-48);font-variant-numeric:tabular-nums}
+.mcard h3{font-size:19px;font-weight:600;letter-spacing:-.2px}
+.mcard .val{font-family:var(--display);font-size:30px;font-weight:600;letter-spacing:-.4px;line-height:1.1}
+.mcard .val.na{color:#b0b0b5}
+.mcard .ent{font-size:13px;color:var(--ink-80);letter-spacing:-.2px}
+.empty{grid-column:1/-1;text-align:center;color:var(--ink-48);padding:24px 0}
+.detail{margin-top:24px;background:var(--canvas);border-radius:var(--r-lg);box-shadow:0 0 0 1px var(--hairline);padding:28px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+.detail h3{font-size:28px;font-weight:600;letter-spacing:-.3px}
+.detail .kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;margin-top:16px;font-size:14px;letter-spacing:-.224px}
+.detail .kv dt{color:var(--ink-48)}
+.detail .kv dd{margin:0}
+.split{margin-top:6px}
+.split .lab{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-80);margin-bottom:6px;letter-spacing:-.2px}
+.split .sb{display:flex;gap:2px;height:20px}
+.split .sb span{height:100%;transition:width .5s var(--ease)}
+.split .sb span:first-child{border-radius:4px 0 0 4px}
+.split .sb span:last-child{border-radius:0 4px 4px 0}
+.segs{display:grid;gap:8px;margin-top:10px}
+.segrow{display:grid;grid-template-columns:120px minmax(0,1fr) 60px;gap:10px;align-items:center;font-size:13px;letter-spacing:-.2px}
+.segrow .b{height:14px;background:var(--primary);border-radius:0 4px 4px 0;transition:width .6s var(--ease)}
+.segrow .n{text-align:right}
+.dempty{color:var(--ink-48);font-size:15px}
+
+/* overlap */
+.range-vis{max-width:820px;margin:0 auto}
+.rv-track{position:relative;height:64px;margin-top:20px}
+.rv-line{position:absolute;left:0;right:0;top:30px;height:2px;background:var(--line-dark)}
+.rv-band{position:absolute;top:22px;height:18px;background:rgba(41,151,255,.35);border-radius:9px;transition:left .5s var(--ease),width .5s var(--ease)}
+.rv-pt{position:absolute;top:22px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--primary-on-dark);box-shadow:0 0 0 3px var(--tile-2)}
+.rv-lab{position:absolute;top:46px;transform:translateX(-50%);font-size:12px;color:var(--body-muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.rv-lab.up{top:0}
+.ovl-sum{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-top:28px;text-align:center}
+.ovl-sum b{display:block;font-family:var(--display);font-size:40px;font-weight:600;letter-spacing:-.4px}
+.ovl-sum span{font-size:14px;color:var(--body-muted)}
+.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-top:32px}
+.person{padding:14px 16px;border-radius:var(--r-lg);background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px var(--line-dark);font-size:13px;letter-spacing:-.2px;color:var(--body-muted);transition:opacity .3s}
+.person b{color:var(--on-dark);font-size:15px;margin-right:6px}
+.person .cos{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.person .cos span{padding:2px 8px;border-radius:var(--r-pill);font-size:11px;box-shadow:inset 0 0 0 1px var(--line-dark)}
+.person .cos span.y{background:rgba(41,151,255,.22);box-shadow:none;color:var(--on-dark)}
+.person.off{opacity:.3}
+
+/* verification */
+.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.check{background:var(--parchment);border-radius:var(--r-lg);padding:22px;display:grid;grid-template-columns:28px minmax(0,1fr);gap:14px}
+.check h3{font-size:17px;font-weight:600;letter-spacing:-.374px}
+.check p{margin:4px 0 0;font-size:14px;color:var(--ink-80);letter-spacing:-.224px}
+.check .res{display:inline-block;margin-top:10px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:var(--r-pill);background:var(--canvas);box-shadow:inset 0 0 0 1px var(--hairline)}
+.rings{display:flex;justify-content:center;gap:56px;flex-wrap:wrap;margin-top:56px}
+.ring{text-align:center}
+.ring svg{display:block;margin:0 auto}
+.ring b{display:block;font-family:var(--display);font-size:28px;font-weight:600;margin-top:10px}
+.ring span{font-size:14px;color:var(--ink-80)}
+
+/* todo */
+.todo{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px}
+.card{background:var(--canvas);border-radius:var(--r-lg);box-shadow:0 0 0 1px var(--hairline);padding:26px}
+.card h3{font-size:21px;font-weight:600;letter-spacing:.231px;margin-bottom:14px}
+.tlist{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.tlist li{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--divider-soft);font-size:15px;letter-spacing:-.24px}
+.tlist li:last-child{border-bottom:0}
+.tlist li span{color:var(--ink-48);font-size:13px;text-align:right}
+.qlist{margin:0;padding-left:20px;display:grid;gap:12px;font-size:15px;letter-spacing:-.24px}
+.qlist b{font-weight:600}
+
+footer{background:var(--parchment);color:var(--ink-80);padding-block:56px;border-top:1px solid var(--hairline)}
+.fcols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.fcols h5{margin:0 0 6px;font-size:14px;font-weight:600;color:var(--ink);letter-spacing:-.224px}
+.fcols p{margin:0;font-size:12px;line-height:2;letter-spacing:-.12px}
+.legal{margin-top:32px;padding-top:16px;border-top:1px solid var(--hairline);font-size:12px;line-height:1.5;color:var(--ink-48);letter-spacing:-.12px}
+
+@media (max-width:1068px){.hero .big{font-size:96px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:833px){
+  .gnav span{display:none}
+  .kids,.rule{grid-template-columns:minmax(0,1fr)}
+  .detail,.todo,.checks{grid-template-columns:minmax(0,1fr)}
+  .fcols{grid-template-columns:minmax(0,1fr)}
+  .brow,.axis{grid-template-columns:104px minmax(0,1fr);gap:10px}
+}
+@media (max-width:640px){
+  .tile{padding-block:56px}
+  .h-lg{font-size:30px}.lead-airy{font-size:18px}
+  .hero .big{font-size:64px;letter-spacing:-1.5px}.hero .big small{font-size:28px}
+  .hero .lead{font-size:20px}
+  .stat .v{font-size:32px}
+  .parent{grid-template-columns:minmax(0,1fr)}
+  .subnav .cat{font-size:17px}
+  .subnav .cta{display:none}
+  .ovl-sum{gap:24px}.ovl-sum b{font-size:30px}
+}
+</style>
+
+<header class="gnav"><div class="wrap"><b>SUPEX Headcount 2025</b><span>2025 사업보고서 · 기준일 2025.12.31 · 법인 별도 기준</span></div></header>
+<div class="subnav"><div class="wrap">
+  <span class="cat">임직원 현황</span>
+  <div class="links" id="spy"><a href="#top">요약</a><a href="#chart">회사별</a><a href="#structure">중복 제거</a><a href="#members">21개사</a><a href="#overlap">겸직 보정</a><a href="#verify">검증</a><a href="#next">남은 작업</a></div>
+  <a class="cta" href="#members">멤버사 보기</a>
+</div><div class="progress" id="progress"></div></div>
+
+<main>
+<section class="t-light hero" id="top">
+  <div class="wrap">
+    <p class="eyebrow">SUPEX추구협의회 멤버사 · 2025 사업보고서 기준</p>
+    <h1 class="big num" id="heroNum">53,714<small>명</small></h1>
+    <p class="lead">확보한 9개 법인의 2025.12.31 기준 직원 수 합계입니다. 21개 멤버사 중 10개사가 확정됐습니다.</p>
+    <div class="coverage rv">
+      <div class="cbar" id="cbar" role="group" aria-label="멤버사 집계 상태"></div>
+      <div class="clegend" id="clegend"></div>
+      <p class="cnote" id="cnote" aria-live="polite">막대를 누르면 해당 상태의 회사가 표시됩니다.</p>
+    </div>
+    <div class="ctas"><a class="btn" href="#chart">회사별로 보기</a><a class="btn ghost" href="#verify">검증 기록</a></div>
+  </div>
+</section>
+
+<section class="tile t-parch">
+  <div class="wrap">
+    <div class="stats rv">
+      <div class="stat"><div class="v num" data-to="51943">51,943</div><p>기간의 정함이 없는 근로자</p></div>
+      <div class="stat"><div class="v num" data-to="1771">1,771</div><p>기간제 근로자</p></div>
+      <div class="stat"><div class="v num">53,692<small>~</small>53,701</div><p>겸직 임원 보정 후 범위</p></div>
+      <div class="stat"><div class="v num">9<small> / 18</small></div><p>필요 법인 보고서 확보·검증</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="tile t-light" id="chart">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="eyebrow">회사별 직원 수</p>
+      <h2 class="h-lg">SK하이닉스가 64%를 차지합니다.</h2>
+      <p class="lead-airy">확정된 10개 멤버사. SK이노베이션은 본사와 E&amp;S CIC로 나눠 표시했습니다. 막대에 포인터를 올리면 세부 수치가 나옵니다.</p>
+    </div>
+    <div class="controls">
+      <div class="seg" id="modeSeg" role="group" aria-label="표시 방식"><span class="pill"></span><button type="button" data-v="total" aria-pressed="true">합계</button><button type="button" data-v="type" aria-pressed="false">정규·기간제</button><button type="button" data-v="sex" aria-pressed="false">남·여</button></div>
+      <button class="toggle" type="button" id="exHynix" aria-pressed="false"><span class="sw"></span>SK하이닉스 빼고 비교</button>
+      <button class="toggle" type="button" id="showTable" aria-pressed="false"><span class="sw"></span>표로 보기</button>
+    </div>
+    <div class="chart rv">
+      <div class="legend" id="legend"></div>
+      <div class="bars" id="bars"></div>
+      <div class="axis"><div></div><div class="ticks" id="ticks"></div></div>
+      <p class="chartnote">출처: 각 사 2025 사업보고서 「직원 등 현황」, 기준일 2025.12.31, 법인 별도 기준. SK가스는 2026.08.13 정정본.</p>
+    </div>
+    <div class="tablewrap" id="tableWrap" hidden></div>
+  </div>
+</section>
+
+<section class="tile t-dark" id="structure">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="eyebrow">중복 집계 방지</p>
+      <h2 class="h-lg">중간지주는 한 번, 자회사도 한 번.</h2>
+      <p class="lead-airy">SK이노베이션은 SK에너지·SK지오센트릭·SK온을 거느린 중간지주회사입니다. 연결 인원 대신 법인 별도 인원만 써서 같은 사람이 두 번 세어지지 않게 했습니다. 상자를 눌러 근거를 확인하세요.</p>
+    </div>
+    <div class="struct rv">
+      <div class="parent">
+        <div class="cap"><b>SK이노베이션 법인</b><span class="num">2,064명 · 사업보고서 710쪽</span></div>
+        <button class="node" type="button" data-k="hq" aria-pressed="true"><div class="t">#3 SK이노베이션 · 본사 부문</div><div class="v num">1,500<small>명</small></div><div class="d">환경과학기술원(산하 연구소) 포함</div></button>
+        <button class="node" type="button" data-k="es" aria-pressed="false"><div class="t">#9 SK이노베이션 E&amp;S · CIC 부문</div><div class="v num">564<small>명</small></div><div class="d">2024.11 SK E&amp;S 흡수합병</div></button>
+      </div>
+      <div class="links-v" aria-hidden="true"></div>
+      <div class="kids">
+        <button class="node" type="button" data-k="en" aria-pressed="false"><div class="t">#7 SK에너지 · 자회사</div><div class="v num">2,383<small>명</small></div><div class="d">자체 사업보고서로 1회 집계</div></button>
+        <button class="node" type="button" data-k="gc" aria-pressed="false"><div class="t">#10 SK지오센트릭 · 자회사</div><div class="v num">1,145<small>명</small></div><div class="d">자체 사업보고서로 1회 집계</div></button>
+        <button class="node" type="button" data-k="on" aria-pressed="false"><div class="t">#6 SK온 · 자회사</div><div class="v num">3,822<small>명</small></div><div class="d">#16 SK엔무브 합병분 포함</div></button>
+      </div>
+      <div class="explain" id="explain" aria-live="polite"></div>
+      <div class="rule">
+        <div><b>법인 별도 기준만</b>「직원 등 현황」은 그 법인 재직자만 셉니다. 연결·글로벌 인원은 쓰지 않았습니다.</div>
+        <div><b>CIC는 모회사에서 분리</b>2,064명을 본사 1,500명과 E&amp;S 564명으로 나눴습니다. 합계는 그대로입니다.</div>
+        <div><b>합병 법인은 존속 법인에</b>SK엔무브는 SK온 수치에 들어 있어 따로 더하지 않습니다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tile t-parch" id="members">
+  <div class="wrap">
+    <div class="head rv" style="margin-bottom:28px">
+      <p class="eyebrow">'26년 멤버사 건제 순</p>
+      <h2 class="h-lg">21개 멤버사, 하나씩.</h2>
+      <p class="lead-airy">카드를 누르면 성별·부문 구성, 미등기임원 포함 여부, 근거 보고서가 아래에 펼쳐집니다.</p>
+    </div>
+    <label class="search" for="mq"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="6" cy="6" r="4.6" stroke="currentColor" stroke-width="1.6"/><path d="M9.5 9.5 13 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><input id="mq" type="search" placeholder="회사명 검색" aria-label="회사명 검색"></label>
+    <div class="filters" id="mfilters"></div>
+    <div class="mgrid" id="mgrid"></div>
+    <div class="detail" id="detail"></div>
+  </div>
+</section>
+
+<section class="tile t-dark2" id="overlap">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="eyebrow">겸직 미등기임원 보정</p>
+      <h2 class="h-lg">최대 22명, 0.04%.</h2>
+      <p class="lead-airy">같은 사람이 여러 멤버사 임원 현황에 미등기임원으로 올라 있는 경우가 19명입니다. 이들이 여러 회사 직원 수에 겹쳐 들어갔을 가능성이 있어, 공시 합계와 보정 범위를 함께 표시합니다.</p>
+    </div>
+    <div class="range-vis rv">
+      <div class="controls" style="margin-bottom:0">
+        <div class="seg" id="ovlSeg" role="group" aria-label="보정 기준"><span class="pill"></span><button type="button" data-v="strict" aria-pressed="true">포함 명시 회사만 (13명)</button><button type="button" data-v="max" aria-pressed="false">미기재 회사까지 (22명)</button></div>
+      </div>
+      <div class="rv-track" id="rvTrack"></div>
+      <div class="ovl-sum"><div><b class="num">53,714</b><span>공시 합계</span></div><div><b class="num" id="ovlLow">53,701</b><span>보정 후</span></div><div><b class="num" id="ovlD">−13</b><span>중복 가능 인원</span></div></div>
+    </div>
+    <div class="people" id="people"></div>
+    <p class="muted" style="font-size:13px;text-align:center;margin-top:20px;letter-spacing:-.2px">파란 칩: 직원 수에 미등기임원을 포함한다고 주석에 명시한 회사. 테두리 칩: 포함 여부 미기재(SKT·SK에코플랜트·SK디스커버리). 기준일 2025.12.31 임원 현황 표 기준.</p>
+  </div>
+</section>
+
+<section class="tile t-light" id="verify">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="eyebrow">교차검증</p>
+      <h2 class="h-lg">숫자 하나하나를 두 번 읽었습니다.</h2>
+    </div>
+    <div class="checks rv" id="checks"></div>
+    <div class="rings rv" id="rings"></div>
+  </div>
+</section>
+
+<section class="tile t-parch" id="next">
+  <div class="wrap">
+    <div class="head rv"><p class="eyebrow">남은 작업</p><h2 class="h-lg">9개사가 남았습니다.</h2></div>
+    <div class="todo rv">
+      <div class="card"><h3>미수집 멤버사</h3><ul class="tlist" id="tlist"></ul></div>
+      <div class="card"><h3>결정이 필요한 것</h3>
+        <ol class="qlist">
+          <li><b>임직원 정의.</b> 6개사는 직원 수에 미등기임원을 포함하고 3개사는 미기재입니다. 등기임원은 모두 빠져 있습니다. 직원만 셀지, 임원까지 더할지 정해야 합니다.</li>
+          <li><b>SK에코플랜트 머티리얼즈 범위.</b> SK에코플랜트 안의 Gas &amp; Material 부문 140명만 볼지, SK트리켐·SK레조낙 등 자회사까지 넣을지 정해야 합니다.</li>
+          <li><b>SK엔무브 단독 인원.</b> SK온 표에 부문 구분이 없어 분리할 수 없습니다. 필요하면 합병 전 2025 반기보고서(6.30)를 참고치로 쓸 수 있습니다.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">
+  <div class="fcols">
+    <div><h5>출처</h5><p>각 사 2025 사업보고서(DART) 「VIII. 임원 및 직원 등에 관한 사항」<br>멤버사: 「'26년 멤버사 및 협의회 위원 건제」(SK, 2026.1.)</p></div>
+    <div><h5>집계 기준</h5><p>기준일 2025.12.31 · 법인 별도 · 공시된 직원 합계<br>단시간 근로자는 각 항목에 포함</p></div>
+    <div><h5>원자료</h5><p>research/headcount/02_21개사_직원현황_2025사업보고서.md<br>research/headcount/03_사업보고서_직원현황_추출원본.csv</p></div>
+  </div>
+  <p class="legal">미등기임원 포함 여부와 해외 주재원 포함 여부는 회사마다 다릅니다. SK하이닉스는 회장·부회장·등기임원 제외를 명시해 미등기임원 포함으로 해석했습니다. 공정위 기업집단포털과의 대조는 아직 하지 않았습니다. 작성 2026-10-23.</p>
+</div></footer>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fmt=n=>n.toLocaleString('ko-KR');
+
+/* ---------- data: 2025 사업보고서 직원 등 현황 (기준일 2025.12.31) ---------- */
+// m/f: [정규, 기간제]
+const CO={
+  hynix:{name:'SK하이닉스',m:[22988,49],f:[11478,34],reg:9,un:183,incl:'포함 해석',rep:'사업보고서(2026.03.17)',pg:352,segs:[['반도체',34549]]},
+  ihq:{name:'SK이노베이션',sub:'본사 부문',m:[995,3],f:[500,2],reg:8,un:72,incl:'포함(명시)',rep:'사업보고서(2026.03.16)',pg:710,segs:[['SK이노베이션',1500],['E&S CIC',564]],note:'환경과학기술원(산하 연구소) 포함. 등기·미등기임원 수는 SK이노베이션 법인 전체 기준.'},
+  ies:{name:'SK이노베이션 E&S',sub:'CIC 부문',m:[407,6],f:[144,7],reg:null,un:null,incl:'포함(명시)',rep:'SK이노베이션 사업보고서(2026.03.16)',pg:710,segs:[['SK이노베이션',1500],['E&S CIC',564]],note:'2024.11 SK E&S가 SK이노베이션에 흡수합병. 사내 독립기업(CIC)으로 운영.'},
+  skt:{name:'SK텔레콤',m:[3882,165],f:[999,270],reg:8,un:96,incl:'미기재',rep:'사업보고서(2026.03.18)',pg:390,segs:[['전사',5316]]},
+  disc:{name:'SK디스커버리',m:[32,12],f:[16,5],reg:7,un:12,incl:'미기재',rep:'사업보고서(2026.03.17)',pg:606,segs:[['사무직',65]]},
+  on:{name:'SK온',m:[2916,37],f:[825,44],reg:9,un:75,incl:'포함(명시)',rep:'사업보고서(2026.03.16)',pg:428,segs:[['전사',3822]],note:'2025.2 SK엔텀, 2025.11 SK엔무브 합병분 포함. 부문 구분 없음.'},
+  en:{name:'SK에너지',m:[2090,75],f:[216,2],reg:4,un:31,incl:'포함(명시)',rep:'사업보고서(2026.03.16)',pg:331,segs:[['전사',2383]]},
+  eco:{name:'SK에코플랜트',m:[2301,831],f:[399,177],reg:6,un:78,incl:'미기재',rep:'사업보고서(2026.03.31)',pg:429,segs:[['Solution',1796],['Hi-tech.',1045],['기타',697],['Gas & Material',140],['Asset Lifecycle',30]],note:'Gas & Material 부문 140명을 SK에코플랜트 머티리얼즈로 해석.'},
+  gc:{name:'SK지오센트릭',m:[1058,6],f:[80,1],reg:4,un:13,incl:'포함(명시)',rep:'사업보고서(2026.03.16)',pg:317,segs:[['전사',1145]]},
+  gas:{name:'SK가스',m:[475,22],f:[142,23],reg:7,un:28,incl:'포함(명시)',rep:'[정정]사업보고서(2026.08.13)',pg:440,segs:[['LPG사업 등',662]]}
+};
+// SK에코플랜트 성별·고용형태는 5개 부문 행 합산: 남 정규 2,301·기간제 831 / 여 정규 399·기간제 177
+Object.values(CO).forEach(c=>{c.r=c.m[0]+c.f[0];c.t=c.m[1]+c.f[1];c.tot=c.r+c.t;c.male=c.m[0]+c.m[1];c.female=c.f[0]+c.f[1]});
+
+const MEMBERS=[
+  [1,'SK㈜','todo',null,'SK㈜','PDF 전송 실패. VIII장만 다시 받아야 함'],
+  [2,'SK하이닉스','done','hynix','SK하이닉스',''],
+  [3,'SK이노베이션','done','ihq','SK이노베이션 본사 부문','환경과학기술원 포함'],
+  [4,'SK텔레콤','done','skt','SK텔레콤',''],
+  [5,'SK디스커버리','done','disc','SK디스커버리',''],
+  [6,'SK온','done','on','SK온','SK엔무브 합병분 포함'],
+  [7,'SK에너지','done','en','SK에너지',''],
+  [8,'SK에코플랜트','done','eco','SK에코플랜트',''],
+  [9,'SK이노베이션 E&S','done','ies','SK이노베이션 E&S CIC 부문',''],
+  [10,'SK지오센트릭','done','gc','SK지오센트릭',''],
+  [11,'SK브로드밴드','todo',null,'SK브로드밴드','사업보고서 필요'],
+  [12,'SK가스','done','gas','SK가스','정정본 기준'],
+  [13,'SK실트론','todo',null,'SK실트론','사업보고서 필요'],
+  [14,'SK스퀘어','todo',null,'SK스퀘어','사업보고서 필요'],
+  [15,'SK네트웍스','todo',null,'SK네트웍스','사업보고서 필요'],
+  [16,'SK엔무브','incl','on','SK온에 포함','2025.11 SK온 흡수합병, 분리 불가'],
+  [17,'SKC','todo',null,'SKC','사업보고서 필요'],
+  [18,'SK케미칼','todo',null,'SK케미칼','사업보고서 필요'],
+  [19,'SK㈜ AX','todo',null,'SK㈜ 사내 조직(추정)','SK㈜ 보고서에서 부문 확인'],
+  [20,'SK에코플랜트 머티리얼즈','incl','eco','SK에코플랜트 Gas & Material 부문','140명, SK에코플랜트 수치에 포함'],
+  [21,'SK바이오팜','todo',null,'SK바이오팜','사업보고서 필요']
+];
+const STATUS={done:'확정',incl:'포함',todo:'미수집'};
+const TOTAL=53714;
+
+/* ---------- reveal (항상 보이는 상태에서 위치만 이동) ---------- */
+if(!reduce&&'IntersectionObserver' in window){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.remove('pre');io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px'});
+  $$('.rv').forEach(el=>{if(el.getBoundingClientRect().top>innerHeight){el.classList.add('pre');io.observe(el)}});
+}
+
+/* ---------- scroll spy ---------- */
+const links=$$('#spy a'), secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+function onScroll(){
+  const y=scrollY+innerHeight*.35; let cur=0;
+  secs.forEach((s,i)=>{if(s&&s.offsetTop<=y)cur=i});
+  links.forEach((a,i)=>a.classList.toggle('on',i===cur));
+  const h=document.documentElement.scrollHeight-innerHeight; $('#progress').style.width=(h>0?scrollY/h*100:0)+'%';
+}
+addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+/* ---------- count up ---------- */
+function countTo(el,to,suffix){
+  if(reduce){return}
+  const t0=performance.now(),d=1200;
+  (function f(t){const p=Math.min(1,(t-t0)/d);el.innerHTML=fmt(Math.round(to*(1-Math.pow(1-p,3))))+(suffix||'');if(p<1)requestAnimationFrame(f)})(t0);
+}
+countTo($('#heroNum'),TOTAL,'<small>명</small>');
+if('IntersectionObserver' in window){
+  const cio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){countTo(e.target,+e.target.dataset.to);cio.unobserve(e.target)}}),{threshold:.6});
+  $$('[data-to]').forEach(el=>cio.observe(el));
+}
+
+/* ---------- segmented ---------- */
+function seg(root,cb){
+  const pill=root.querySelector('.pill'),bs=Array.from(root.querySelectorAll('button'));
+  const move=b=>{pill.style.left=b.offsetLeft+'px';pill.style.width=b.offsetWidth+'px'};
+  bs.forEach(b=>b.addEventListener('click',()=>{bs.forEach(x=>x.setAttribute('aria-pressed',x===b));move(b);cb(b.dataset.v)}));
+  const cur=()=>bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0];
+  requestAnimationFrame(()=>move(cur())); addEventListener('resize',()=>move(cur()));
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>move(cur()));
+}
+
+/* ---------- coverage bar ---------- */
+const cnt={done:10,incl:2,todo:9};
+$('#cbar').innerHTML=['done','incl','todo'].map(k=>`<button type="button" class="c-${k}" style="flex:${cnt[k]}" data-k="${k}" aria-pressed="false" aria-label="${STATUS[k]} ${cnt[k]}개사"></button>`).join('');
+$('#clegend').innerHTML=['done','incl','todo'].map(k=>`<div><b class="num">${cnt[k]}</b><span class="st ${k}"><i></i>${STATUS[k]}</span></div>`).join('');
+$('#cbar').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return; const on=b.getAttribute('aria-pressed')!=='true';
+  $$('#cbar button').forEach(x=>x.setAttribute('aria-pressed','false'));
+  if(!on){$('#cnote').textContent='막대를 누르면 해당 상태의 회사가 표시됩니다.';return}
+  b.setAttribute('aria-pressed','true');
+  $('#cnote').textContent=STATUS[b.dataset.k]+': '+MEMBERS.filter(m=>m[2]===b.dataset.k).map(m=>m[1]).join(', ');
+});
+
+/* ---------- bar chart ---------- */
+const ORDER=['hynix','skt','on','eco','en','ihq','gc','gas','ies','disc'];
+let mode='total', exH=false;
+const tip=$('#tip');
+function nice(max){const p=Math.pow(10,Math.floor(Math.log10(max)));const m=max/p;const s=m<=1.5?.25:m<=3?.5:m<=6?1:2;const step=s*p;return {step,top:Math.ceil(max/step)*step}}
+function renderChart(){
+  const keys=ORDER.filter(k=>!(exH&&k==='hynix'));
+  const max=Math.max(...keys.map(k=>CO[k].tot)); const {step,top}=nice(max);
+  const leg={total:'',type:`<span><i style="background:var(--primary)"></i>기간의 정함이 없는</span><span><i style="background:var(--series-2)"></i>기간제</span>`,sex:`<span><i style="background:var(--primary)"></i>남</span><span><i style="background:var(--series-2)"></i>여</span>`};
+  $('#legend').innerHTML=leg[mode];
+  const gl=[];for(let v=0;v<=top;v+=step)gl.push(v);
+  $('#bars').innerHTML=keys.map(k=>{
+    const c=CO[k], w=c.tot/top*100;
+    const a=mode==='sex'?c.male:c.r, b=mode==='sex'?c.female:c.t;
+    return `<div class="brow" data-k="${k}"><div class="nm">${c.name}${c.sub?`<small>${c.sub}</small>`:''}</div><div class="track">${gl.map(v=>`<span class="gl" style="left:${v/top*100}%"></span>`).join('')}<div class="fill ${mode==='total'?'single':''}" style="width:calc(${w}% - ${mode==='total'?0:2}px)"><span class="s1" style="flex:${mode==='total'?1:a} 1 0"></span><span class="s2" style="flex:${b} 1 0"></span></div><span class="bval num">${fmt(c.tot)}</span></div></div>`;
+  }).join('');
+  $('#ticks').innerHTML=gl.map(v=>`<span style="left:${v/top*100}%">${v>=1000?(v/1000)+'K':v}</span>`).join('');
+  renderTable();
+}
+function showTip(e,k){
+  const c=CO[k];
+  const rows=mode==='sex'?[['var(--primary)','남',c.male],['var(--series-2)','여',c.female]]:[['var(--primary)','기간의 정함이 없는',c.r],['var(--series-2)','기간제',c.t]];
+  tip.innerHTML=`<b>${c.name}${c.sub?' · '+c.sub:''}</b>${rows.map(([col,l,v])=>`<div class="r"><span><i style="background:${col}"></i>${l}</span><span class="num">${fmt(v)}</span></div>`).join('')}<div class="r" style="margin-top:4px;font-weight:600"><span>합계</span><span class="num">${fmt(c.tot)}</span></div><div class="r" style="color:var(--ink-48);margin-top:4px"><span>9개 법인 중 비중</span><span class="num">${(c.tot/TOTAL*100).toFixed(1)}%</span></div>`;
+  const x=Math.min(e.clientX+16,innerWidth-tip.offsetWidth-12), y=Math.min(e.clientY+16,innerHeight-tip.offsetHeight-12);
+  tip.style.left=x+'px';tip.style.top=y+'px';tip.classList.add('show');
+}
+$('#bars').addEventListener('pointermove',e=>{const r=e.target.closest('.brow');if(!r){tip.classList.remove('show');return}$$('.brow').forEach(x=>x.classList.toggle('dim',x!==r));showTip(e,r.dataset.k)});
+$('#bars').addEventListener('pointerleave',()=>{tip.classList.remove('show');$$('.brow').forEach(x=>x.classList.remove('dim'))});
+seg($('#modeSeg'),v=>{mode=v;renderChart()});
+$('#exHynix').addEventListener('click',e=>{exH=!exH;e.currentTarget.setAttribute('aria-pressed',exH);renderChart()});
+$('#showTable').addEventListener('click',e=>{const on=e.currentTarget.getAttribute('aria-pressed')!=='true';e.currentTarget.setAttribute('aria-pressed',on);$('#tableWrap').hidden=!on});
+function renderTable(){
+  const ks=ORDER;
+  const sum=f=>ks.reduce((a,k)=>a+f(CO[k]),0);
+  $('#tableWrap').innerHTML=`<table><thead><tr><th>멤버사</th><th>집계 법인</th><th>정규</th><th>기간제</th><th>남</th><th>여</th><th>합계</th><th>비중</th></tr></thead><tbody>${ks.map(k=>{const c=CO[k];return `<tr><td>${c.name}</td><td>${c.sub?c.sub:'법인 전체'}</td><td class="num">${fmt(c.r)}</td><td class="num">${fmt(c.t)}</td><td class="num">${fmt(c.male)}</td><td class="num">${fmt(c.female)}</td><td class="num"><b>${fmt(c.tot)}</b></td><td class="num">${(c.tot/TOTAL*100).toFixed(1)}%</td></tr>`}).join('')}</tbody><tfoot><tr><td>합계</td><td>9개 법인</td><td class="num">${fmt(sum(c=>c.r))}</td><td class="num">${fmt(sum(c=>c.t))}</td><td class="num">${fmt(sum(c=>c.male))}</td><td class="num">${fmt(sum(c=>c.female))}</td><td class="num">${fmt(sum(c=>c.tot))}</td><td class="num">100%</td></tr></tfoot></table>`;
+}
+renderChart();
+
+/* ---------- structure ---------- */
+const EXP={
+  hq:'SK이노베이션 사업보고서 직원 표는 「SK이노베이션」과 「SK이노베이션 E&S CIC」 두 부문뿐입니다. R&D 담당조직인 환경과학기술원은 SK이노베이션 법인 조직이라 본사 부문 1,500명에 들어 있습니다.',
+  es:'SK E&S는 2024.11.1 SK이노베이션에 흡수합병돼 별도 법인이 아닙니다. SK이노베이션 표의 E&S CIC 행 564명을 멤버사 #9로 떼어 썼고, 본사 부문과 더하면 법인 전체 2,064명과 같습니다.',
+  en:'SK에너지는 SK이노베이션의 자회사지만 별도 법인입니다. SK이노베이션 직원 수에는 들어 있지 않아 자체 사업보고서(331쪽)로 한 번만 셉니다.',
+  gc:'SK지오센트릭도 별도 법인입니다. 자체 사업보고서(317쪽)의 2025.12.31 기준 1,145명을 한 번만 셉니다.',
+  on:'SK온 주석에 2025년 11월 합병한 SK엔무브 소속 직원이 포함돼 있다고 적혀 있습니다. 그래서 멤버사 #16 SK엔무브는 따로 더하지 않습니다. SK온 표에는 부문 구분이 없어 엔무브 인원만 분리할 수는 없습니다.'
+};
+function setNode(k){$$('.node').forEach(n=>n.setAttribute('aria-pressed',n.dataset.k===k));$('#explain').textContent=EXP[k]}
+$$('.node').forEach(n=>n.addEventListener('click',()=>setNode(n.dataset.k))); setNode('hq');
+
+/* ---------- members ---------- */
+let mf='전체', sel=2;
+const FILTERS=['전체','확정','포함','미수집'];
+$('#mfilters').innerHTML=FILTERS.map(f=>`<button class="chip" type="button" data-f="${f}" aria-pressed="${f===mf}">${f}${f==='전체'?' 21':f==='확정'?' 10':f==='포함'?' 2':' 9'}</button>`).join('');
+$('#mfilters').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;mf=b.dataset.f;$$('#mfilters .chip').forEach(x=>x.setAttribute('aria-pressed',x===b));renderMembers()});
+$('#mq').addEventListener('input',renderMembers);
+function valOf(m){if(m[2]==='done')return fmt(CO[m[3]].tot);if(m[0]===20)return '(140)';if(m[2]==='incl')return '포함';return '—'}
+function renderMembers(){
+  const q=$('#mq').value.trim();
+  const list=MEMBERS.filter(m=>(mf==='전체'||STATUS[m[2]]===mf)&&(!q||m[1].includes(q)||m[4].includes(q)));
+  $('#mgrid').innerHTML=list.length?list.map(m=>`<button class="mcard" type="button" data-n="${m[0]}" aria-pressed="${m[0]===sel}"><div class="top"><span class="no">#${m[0]}</span><span class="st ${m[2]}"><i></i>${STATUS[m[2]]}</span></div><h3>${m[1]}</h3><div class="val num ${m[2]==='done'?'':'na'}">${valOf(m)}${m[2]==='done'?'<span style="font-size:15px;font-weight:400;margin-left:3px">명</span>':''}</div><div class="ent">${m[4]}${m[5]?' · '+m[5]:''}</div></button>`).join(''):`<p class="empty">"${q.replace(/[<>&]/g,'')}"에 해당하는 멤버사가 없습니다.</p>`;
+}
+$('#mgrid').addEventListener('click',e=>{const b=e.target.closest('.mcard');if(!b)return;sel=+b.dataset.n;$$('.mcard').forEach(x=>x.setAttribute('aria-pressed',x===b));renderDetail();if(innerWidth<834)$('#detail').scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'})});
+function splitBar(label,a,b,la,lb){const t=a+b;return `<div class="split"><div class="lab"><span>${label}</span><span class="num">${la} ${fmt(a)} · ${lb} ${fmt(b)}</span></div><div class="sb"><span style="width:calc(${a/t*100}% - 1px);background:var(--primary)"></span><span style="width:calc(${b/t*100}% - 1px);background:var(--series-2)"></span></div></div>`}
+function renderDetail(){
+  const m=MEMBERS.find(x=>x[0]===sel), d=$('#detail');
+  if(m[2]==='todo'){d.innerHTML=`<div><p class="eyebrow">#${m[0]} · 미수집</p><h3>${m[1]}</h3><p class="dempty" style="margin-top:12px">${m[5]}. 2025 사업보고서를 드라이브 폴더에 올리면 같은 방식으로 추출·검증합니다.</p></div><div></div>`;return}
+  const c=CO[m[3]], isIncl=m[2]==='incl';
+  const segMax=Math.max(...c.segs.map(s=>s[1]));
+  d.innerHTML=`<div><p class="eyebrow">#${m[0]} · ${STATUS[m[2]]}</p><h3>${m[1]}</h3>
+    <p class="muted" style="margin:8px 0 0;font-size:15px">${isIncl?(m[0]===20?'SK에코플랜트 Gas & Material 부문 140명(기간의 정함이 없는 128명, 기간제 12명). SK에코플랜트 3,708명 안에 포함돼 있어 따로 더하지 않습니다.':'SK온 3,822명 안에 포함돼 있어 따로 더하지 않습니다. 아래 수치는 SK온 법인 전체입니다.'):`${fmt(c.tot)}명 · 9개 법인 합계의 ${(c.tot/TOTAL*100).toFixed(1)}%`}</p>
+    <dl class="kv"><dt>근거</dt><dd>${c.rep} · PDF ${c.pg}쪽</dd><dt>미등기임원</dt><dd>직원 수에 ${c.incl}</dd>${c.reg!=null?`<dt>기준일 임원</dt><dd class="num">등기 ${c.reg}명 · 미등기 ${c.un}명</dd>`:''}${c.note?`<dt>메모</dt><dd>${c.note}</dd>`:''}</dl></div>
+    <div>${splitBar(isIncl&&m[0]===16?'SK온 · 성별':'성별',c.male,c.female,'남','여')}${splitBar('고용 형태',c.r,c.t,'정규','기간제')}
+    <div style="margin-top:18px"><div class="lab" style="font-size:13px;color:var(--ink-80);margin-bottom:4px">사업부문</div><div class="segs">${c.segs.map(([n,v])=>`<div class="segrow"><span>${n}</span><div><div class="b" style="width:${v/segMax*100}%;${(m[0]===20&&n==='Gas & Material')||(m[0]===9&&n==='E&S CIC')||(m[0]===3&&n==='SK이노베이션')?'':'opacity:.45'}"></div></div><span class="n num">${fmt(v)}</span></div>`).join('')}</div></div></div>`;
+}
+renderMembers(); renderDetail();
+
+/* ---------- overlap ---------- */
+const INCL=new Set(['SK에너지','SK지오센트릭','SK온','SK이노베이션','SK가스','SK하이닉스']);
+const PEOPLE=[['박성범','1973.10',['SK에너지','SK이노베이션','SK온','SK지오센트릭']],['이우현','1971.10',['SK에너지','SK이노베이션','SK온']],['강귀은','1977.03',['SK이노베이션','SK지오센트릭']],['김우경','1978.09',['SK이노베이션','SK온']],['류병훈','1980.10',['SK이노베이션','SK하이닉스']],['배기락','1973.12',['SK이노베이션','SK온']],['이규석','1972.10',['SK이노베이션','SK지오센트릭']],['이주현','1976.04',['SK에너지','SK지오센트릭']],['임형진','1971.12',['SK에너지','SK이노베이션']],['정민철','1976.01',['SK이노베이션','SK온']],['김남규','1971.03',['SK가스','SK디스커버리']],['김한조','1977.01',['SK가스','SK디스커버리']],['박철','1966.12',['SK가스','SK디스커버리']],['송경열','1972.09',['SK가스','SK디스커버리']],['이형원','1960.02',['SK가스','SK디스커버리']],['장철웅','1977.03',['SK가스','SK디스커버리']],['염성진','1972.10',['SK텔레콤','SK하이닉스']],['이용석','1961.11',['SK디스커버리','SK텔레콤']],['최태원','1960.12',['SK이노베이션','SK텔레콤']]];
+let ov='strict';
+function renderOverlap(){
+  const dupOf=p=>{const y=p[2].filter(c=>INCL.has(c)).length;return ov==='strict'?Math.max(y-1,0):p[2].length-1};
+  const D=PEOPLE.reduce((a,p)=>a+dupOf(p),0);
+  const lo=53680, hi=53720, pos=v=>(v-lo)/(hi-lo)*100;
+  $('#rvTrack').innerHTML=`<div class="rv-line"></div><div class="rv-band" style="left:${pos(TOTAL-D)}%;width:${pos(TOTAL)-pos(TOTAL-D)}%"></div><div class="rv-pt" style="left:${pos(TOTAL)}%"></div><div class="rv-pt" style="left:${pos(TOTAL-D)}%;background:#fff"></div><span class="rv-lab" style="left:${pos(TOTAL)}%">공시 ${fmt(TOTAL)}</span><span class="rv-lab up" style="left:${pos(TOTAL-D)}%">보정 ${fmt(TOTAL-D)}</span>`;
+  $('#ovlLow').textContent=fmt(TOTAL-D); $('#ovlD').textContent='−'+D;
+  $('#people').innerHTML=PEOPLE.map(p=>{const d=dupOf(p);return `<div class="person ${d?'':'off'}"><b>${p[0]}</b><span class="num">${p[1]}</span> · 중복 가능 ${d}명<div class="cos">${p[2].map(c=>`<span class="${INCL.has(c)?'y':''}">${c}</span>`).join('')}</div></div>`}).join('');
+}
+seg($('#ovlSeg'),v=>{ov=v;renderOverlap()}); renderOverlap();
+
+/* ---------- verification ---------- */
+const OK='<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="12" fill="#0066cc"/><path d="M8 13.4l3.4 3.4L18.2 9.6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const PART='<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="#0066cc" stroke-width="2"/><path d="M13 2a11 11 0 0 1 0 22z" fill="#0066cc"/></svg>';
+const NO='<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="#7a7a7a" stroke-width="1.6" stroke-dasharray="3 3"/></svg>';
+const CHECKS=[[OK,'산술 검증','행마다 정규+기간제=합계, 성별·부문 행의 합=합계 행인지 확인했습니다.','9 / 9 통과'],[OK,'원본 이미지 대조','텍스트로 추출한 숫자와 PDF 원본 페이지를 이미지로 띄워 읽은 숫자를 비교했습니다.','9 / 9 일치'],[OK,'기준일·범위','표 머리의 기준일과 재직자·임원·주재원 주석을 확인했습니다.','9 / 9 기준일 2025.12.31'],[PART,'외부 출처','언론 보도와 비교했습니다. SK하이닉스 34,549명, SK텔레콤 5,316명이 일치합니다.','2 / 9 비교 가능'],[OK,'중복 제거','법인 별도 기준, CIC 분리, 합병 법인 처리, 겸직 임원 보정 범위를 적용했습니다.','적용 완료'],[NO,'기업집단포털 대조','공정위 기업집단포털 종업원 수와 대조하는 단계입니다. 작업 환경에서 접속이 막혀 있습니다.','미실시']];
+$('#checks').innerHTML=CHECKS.map(([i,t,p,r])=>`<div class="check">${i}<div><h3>${t}</h3><p>${p}</p><span class="res">${r}</span></div></div>`).join('');
+function ring(v,t,label,sub){const r=52,c=2*Math.PI*r,p=v/t;return `<div class="ring"><svg width="130" height="130" viewBox="0 0 130 130"><circle cx="65" cy="65" r="${r}" fill="none" stroke="#e8e8ed" stroke-width="10"/><circle class="arc" cx="65" cy="65" r="${r}" fill="none" stroke="#0066cc" stroke-width="10" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p)}" data-off="${c*(1-p)}" data-c="${c}" transform="rotate(-90 65 65)" style="transition:stroke-dashoffset 1.2s cubic-bezier(.25,.1,.25,1)"/><text x="65" y="72" text-anchor="middle" font-family="-apple-system,Inter,sans-serif" font-size="24" font-weight="600" fill="#1d1d1f">${Math.round(p*100)}%</text></svg><b class="num">${v} / ${t}</b><span>${label}</span><br><span style="font-size:12px;color:var(--ink-48)">${sub}</span></div>`}
+$('#rings').innerHTML=ring(10,21,'멤버사 확정','포함 2개사 별도')+ring(9,18,'법인 보고서 확보·검증','SK㈜ 외 8개 법인 남음')+ring(9,9,'확보분 숫자 검증','산술 + 이미지 대조');
+if(!reduce&&'IntersectionObserver' in window){
+  const arcs=$$('.arc'); const rio=new IntersectionObserver(es=>{if(es[0].isIntersecting){arcs.forEach(a=>{a.style.transition='none';a.style.strokeDashoffset=a.dataset.c;requestAnimationFrame(()=>requestAnimationFrame(()=>{a.style.transition='stroke-dashoffset 1.2s cubic-bezier(.25,.1,.25,1)';a.style.strokeDashoffset=a.dataset.off}))});rio.disconnect()}},{threshold:.5});
+  rio.observe($('#rings'));
+}
+
+/* ---------- todo ---------- */
+$('#tlist').innerHTML=MEMBERS.filter(m=>m[2]==='todo').map(m=>`<li>#${m[0]} ${m[1]}<span>${m[5]}</span></li>`).join('');
+})();
+</script>
