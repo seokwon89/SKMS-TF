@@ -178,6 +178,39 @@ svg text{font-family:var(--text)}
 .defs{margin-top:40px;background:var(--parchment);border-radius:var(--r-lg);padding:24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 28px;font-size:14px;letter-spacing:-.224px}
 .defs b{font-weight:600}
 
+.pk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:36px}
+.pk div{text-align:center}
+.pk b{display:block;font-family:var(--display);font-size:44px;font-weight:600;letter-spacing:-.6px;line-height:1.05}
+.pk b small{font-size:20px}
+.pk span{font-size:14px;color:var(--body-muted);letter-spacing:-.224px}
+.flow{display:grid;gap:22px}
+.frow .fl{display:flex;justify-content:space-between;gap:12px;font-size:14px;color:var(--body-muted);letter-spacing:-.224px;margin-bottom:8px;flex-wrap:wrap}
+.frow .fl b{color:var(--on-dark);font-weight:600}
+.fbar{display:flex;gap:2px;height:44px;width:100%}
+.fbar span{height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;letter-spacing:-.12px;color:#fff;overflow:hidden;white-space:nowrap;transition:flex-grow .8s var(--ease),opacity .3s;cursor:default;min-width:0}
+.fbar span:first-child{border-radius:6px 0 0 6px}.fbar span:last-child{border-radius:0 6px 6px 0}.fbar span:only-child{border-radius:6px}
+.fbar span.lt{color:var(--ink)}
+.fbar span:hover{opacity:.85}
+.fnote{font-size:13px;color:var(--body-muted);letter-spacing:-.2px;margin-top:18px}
+.oprow{display:grid;grid-template-columns:150px minmax(0,1fr) 80px;gap:10px;align-items:center;font-size:14px;letter-spacing:-.224px;padding:6px 0}
+.oprow .ax{position:relative;height:18px}
+.oprow .ax i{position:absolute;top:-4px;bottom:-4px;left:50%;width:1px;background:var(--line-dark)}
+.oprow .ax span{position:absolute;top:0;bottom:0;border-radius:4px;transition:all .7s var(--ease)}
+.oprow .v{text-align:right;font-weight:600}
+.trend3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:10px}
+.trend3 div{background:rgba(255,255,255,.04);border-radius:var(--r-md);padding:14px;box-shadow:inset 0 0 0 1px var(--line-dark)}
+.trend3 small{display:block;font-size:12px;color:var(--body-muted)}
+.trend3 b{font-family:var(--display);font-size:22px;font-weight:600}
+.segcard{grid-column:1/-1}
+.segbar{display:flex;gap:2px;height:30px;margin:6px 0 14px}
+.segbar span{height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;overflow:hidden;white-space:nowrap;min-width:0}
+.segbar span:first-child{border-radius:5px 0 0 5px}.segbar span:last-child{border-radius:0 5px 5px 0}.segbar span:only-child{border-radius:5px}
+.segt{width:100%;border-collapse:collapse;min-width:0;font-size:14px}
+.segt th,.segt td{padding:8px 6px;border-bottom:1px solid var(--divider-soft);text-align:right;white-space:normal}
+.segt th:first-child,.segt td:first-child{text-align:left;position:static;background:none}
+.segt i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.segnote{font-size:13px;color:var(--ink-80);margin-top:10px;letter-spacing:-.2px}
+@media (max-width:833px){.pk{grid-template-columns:minmax(0,1fr)}.oprow{grid-template-columns:110px minmax(0,1fr) 64px}.trend3{grid-template-columns:minmax(0,1fr)}}
 footer{background:var(--parchment);color:var(--ink-80);padding-block:48px;border-top:1px solid var(--hairline)}
 .legal{font-size:12px;line-height:1.6;color:var(--ink-48);letter-spacing:-.12px;margin:0}
 
@@ -189,7 +222,7 @@ footer{background:var(--parchment);color:var(--ink-80);padding-block:48px;border
 <header class="gnav"><div class="wrap"><b>SUPEX Financials 2025</b><span>2025 사업보고서 · 연결재무제표 · 단위 조원(별도 표기 제외)</span></div></header>
 <div class="subnav"><div class="wrap">
   <span class="cat">재무구조</span>
-  <div class="links" id="spy"><a href="#top">요약</a><a href="#overlap">중복 유의</a><a href="#score">스코어카드</a><a href="#map">수익×안정</a><a href="#trend">3개년</a><a href="#detail">회사 상세</a><a href="#verify">검증</a></div>
+  <div class="links" id="spy"><a href="#top">요약</a><a href="#overlap">중복 유의</a><a href="#petro">석유사업</a><a href="#score">스코어카드</a><a href="#map">수익×안정</a><a href="#trend">3개년</a><a href="#detail">회사 상세</a><a href="#verify">검증</a></div>
   <div class="seg yearsel" id="yearSeg" role="group" aria-label="연도"><span class="pill"></span><button type="button" data-v="2023" aria-pressed="false">2023</button><button type="button" data-v="2024" aria-pressed="false">2024</button><button type="button" data-v="2025" aria-pressed="true">2025</button></div>
 </div><div class="progress" id="progress"></div></div>
 
@@ -216,6 +249,30 @@ footer{background:var(--parchment);color:var(--ink-80);padding-block:48px;border
       <p class="lead-airy">모회사 연결재무제표에는 자회사 실적이 100% 합쳐져 있습니다. 표에서 <span style="color:#ff9f6e;font-weight:600">연결 중복</span> 표시가 붙은 회사는 모회사 숫자 안에 다시 들어 있으니 유의해서 보세요.</p>
     </div>
     <div class="omap rv" id="omap"></div>
+  </div>
+</section>
+
+<section class="tile t-dark2" id="petro">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="eyebrow">SK이노베이션 계열 석유사업 · 2025</p>
+      <h2 class="h-lg">법인을 더하면 100조가 넘지만,<br>계열 밖으로 판 석유는 47.2조.</h2>
+      <p class="lead-airy">SK에너지가 정제한 제품을 SK온(옛 SK트레이딩인터내셔널)이 사서 다시 팝니다. 법인마다 매출로 잡히지만 SK이노베이션 연결에서는 계열 안의 거래가 지워집니다. 아래 막대를 눌러 두 관점을 바꿔 보세요.</p>
+    </div>
+    <div class="pk rv">
+      <div><b class="num">47.2<small>조</small></b><span>계열 석유사업 외부 매출 · SK이노베이션 연결 매출의 59%</span></div>
+      <div><b class="num">73.3<small>조</small></b><span>에너지·화학 부문 내부거래 제거액</span></div>
+      <div><b class="num">1.12<small>조</small></b><span>에너지·화학 부문 영업이익</span></div>
+    </div>
+    <div class="controls"><div class="seg" id="petroSeg" role="group" aria-label="관점"><span class="pill"></span><button type="button" data-v="gross" aria-pressed="true">법인별 매출 그대로</button><button type="button" data-v="net" aria-pressed="false">계열 전체(내부거래 제거)</button></div></div>
+    <div class="flow rv" id="flow"></div>
+    <div style="margin-top:44px" class="rv">
+      <p class="eyebrow">2025 영업이익 기여 (조원)</p>
+      <div id="oprows"></div>
+      <p class="eyebrow" style="margin-top:32px">에너지·화학 부문 3개년 (SK이노베이션 연결, 내부거래 제거 후)</p>
+      <div class="trend3" id="trend3"></div>
+      <p class="fnote">출처: SK이노베이션 2025 사업보고서 「II. 사업의 내용」(석유사업 47조 1,903억원, 매출 비중 59%)과 주석 36 영업부문 정보(에너지 및 화학 총매출 134.6조, 조정 −73.3조), SK온·SK에너지·SK지오센트릭 2025 사업보고서. 법인별 막대는 각 회사가 보고한 매출(내부거래 포함)이라 더하면 계열 실적보다 커집니다. '그 밖의 계열 법인·조정'은 부문 총매출 134.6조에서 네 항목을 뺀 잔여값으로, SK인천석유화학 등 멤버사가 아닌 법인과 기준 차이를 포함합니다. 화학·윤활유 등 14.1조는 부문 외부 매출 61.3조에서 석유사업 47.2조를 뺀 값입니다.</p>
+    </div>
   </div>
 </section>
 
@@ -295,6 +352,15 @@ const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const D={"SK하이닉스":{"n":"","sub":"53","y":{"2025":{"ca":69458073,"cl":37378999,"nip":42919287,"rev":97146675,"op":47206319,"ni":42947902,"asset":176107659,"liab":55440908,"eq":120666751,"opm":48.6,"npm":44.2,"roe":44.2,"dr":45.9,"cr":185.8,"debt":24757848,"cash":14923766,"stfi":20018487,"netdebt":-10184405,"ndr":-8.4,"dep":14.1,"ocf":53373126,"capex":27518924,"fcf":25854202},"2024":{"ca":42278887,"cl":24965444,"nip":19788681,"rev":66192960,"op":23467319,"ni":19796902,"asset":119855209,"liab":45939505,"eq":73915704,"opm":35.5,"npm":29.9,"roe":31.1,"dr":62.2,"cr":169.3,"debt":25452109,"cash":11205117,"stfi":2951246,"netdebt":11295746,"ndr":15.3,"dep":21.2,"ocf":29795885,"capex":15945534,"fcf":13850351},"2023":{"ca":30468100,"cl":21007810,"nip":-9112428,"rev":32765719,"op":-7730313,"ni":-9137547,"asset":100330165,"liab":46826413,"eq":53503752,"opm":-23.6,"npm":-27.9,"roe":null,"dr":87.5,"cr":145.0,"debt":32498506,"cash":7587329,"stfi":1333589,"netdebt":23577588,"ndr":44.1,"dep":32.4,"ocf":4278191,"capex":8325138,"fcf":-4046947}},"di":{"유동차입금":8161757,"유동리스":547296,"비유동차입금":14086148,"비유동리스":1962647}},"SK이노베이션":{"n":"사채및장기차입금은 유동성분 포함 여부를 주석으로 확인하지 않음","sub":"224","y":{"2025":{"ca":42795276,"cl":41057102,"nip":-3347850,"rev":80296054,"op":448684,"ni":-5436441,"asset":105608481,"liab":69216985,"eq":36391496,"opm":0.6,"npm":-6.8,"roe":-14.4,"dr":190.2,"cr":104.2,"debt":32292098,"cash":16091552,"stfi":253292,"netdebt":15947254,"ndr":43.8,"dep":30.6,"ocf":2283053,"capex":5367187,"fcf":-3084135},"2024":{"ca":36318432,"cl":37725576,"nip":-2259957,"rev":74269647,"op":355697,"ni":-2372483,"asset":110530098,"liab":70881189,"eq":39648909,"opm":0.5,"npm":-3.2,"roe":-9.6,"dr":178.8,"cr":96.3,"debt":41584286,"cash":15865084,"stfi":235915,"netdebt":25483286,"ndr":64.3,"dep":37.6,"ocf":2232522,"capex":10027894,"fcf":-7795372},"2023":{"ca":33279589,"cl":29399179,"nip":256250,"rev":76755739,"op":1880613,"ni":554894,"asset":80835513,"liab":50815546,"eq":30019967,"opm":2.5,"npm":0.7,"roe":null,"dr":169.3,"cr":113.2,"debt":27475913,"cash":13074426,"stfi":317884,"netdebt":14083603,"ndr":46.9,"dep":34.0,"ocf":5367896,"capex":11238126,"fcf":-5870230}},"di":{"단기차입금":7201713,"유동리스":482294,"사채및장기차입금":22764518,"리스":1843573}},"SK텔레콤":{"n":"","sub":"19","y":{"2025":{"ca":6727130,"cl":6529775,"nip":408410,"rev":17099213,"op":1073215,"ni":375084,"asset":30107783,"liab":17152491,"eq":12955292,"opm":6.3,"npm":2.2,"roe":3.3,"dr":132.4,"cr":103.0,"debt":10372827,"cash":1490024,"stfi":186643,"netdebt":8696160,"ndr":67.1,"dep":34.5,"ocf":3923847,"capex":2206567,"fcf":1717280},"2024":{"ca":7476682,"cl":9224278,"nip":1250155,"rev":17940609,"op":1823409,"ni":1387095,"asset":30515255,"liab":18687621,"eq":11827634,"opm":10.2,"npm":7.7,"roe":10.8,"dr":158.0,"cr":81.1,"debt":10764831,"cash":2023721,"stfi":323890,"netdebt":8417220,"ndr":71.2,"dep":35.3,"ocf":5087285,"capex":2487360,"fcf":2599925},"2023":{"ca":6585602,"cl":6993980,"nip":1093611,"rev":17608511,"op":1753204,"ni":1145937,"asset":30119227,"liab":17890828,"eq":12228399,"opm":10.0,"npm":6.5,"roe":null,"dr":146.3,"cr":94.2,"debt":10655154,"cash":1454978,"stfi":294934,"netdebt":8905242,"ndr":72.8,"dep":35.4,"ocf":4947205,"capex":2973882,"fcf":1973323}},"di":{"단기차입금":130000,"유동성사채및장기차입금":1122584,"유동리스":407959,"사채":7294445,"장기차입금":300000,"장기리스":1117839}},"SK디스커버리":{"n":"","sub":"","y":{"2025":{"ca":5465970,"cl":3743633,"nip":129347,"rev":10164014,"op":361354,"ni":144627,"asset":16299659,"liab":9448413,"eq":6851246,"opm":3.6,"npm":1.4,"roe":4.5,"dr":137.9,"cr":146.0,"debt":7262069,"cash":1314193,"stfi":1133836,"netdebt":4814040,"ndr":70.3,"dep":44.6,"ocf":660831,"capex":753522,"fcf":-92691},"2024":{"ca":5540202,"cl":3840553,"nip":36471,"rev":9039603,"op":172558,"ni":47105,"asset":15142281,"liab":8639258,"eq":6503023,"opm":1.9,"npm":0.5,"roe":1.3,"dr":132.8,"cr":144.3,"debt":6436013,"cash":1381256,"stfi":1050821,"netdebt":4003937,"ndr":61.6,"dep":42.5,"ocf":115392,"capex":805863,"fcf":-690471},"2023":{"ca":4868514,"cl":2829893,"nip":196717,"rev":8939217,"op":256702,"ni":255475,"asset":12271294,"liab":6185893,"eq":6085401,"opm":2.9,"npm":2.9,"roe":null,"dr":101.7,"cr":172.0,"debt":4769074,"cash":1015984,"stfi":1492358,"netdebt":2260731,"ndr":37.2,"dep":38.9,"ocf":600646,"capex":952276,"fcf":-351630}},"di":{"단기이자부차입금":1320287,"유동성이자부차입금":754706,"유동리스":198416,"사채":1633413,"장기이자부차입금":2239666,"리스":1115581}},"SK온":{"n":"2024.11 SK트레이딩인터내셔널, 2025.2 SK엔텀, 2025.11 SK엔무브 흡수합병으로 2025 매출 급증","sub":"26","y":{"2025":{"ca":20864608,"cl":21462880,"nip":-3123101,"rev":56747612,"op":-273741,"ni":-5364668,"asset":49313986,"liab":34880624,"eq":14433362,"opm":-0.5,"npm":-9.5,"roe":-29.6,"dr":241.7,"cr":97.2,"debt":20787824,"cash":5046424,"stfi":106826,"netdebt":15634573,"ndr":108.3,"dep":42.2,"ocf":868711,"capex":3583976,"fcf":-2715265},"2024":{"ca":12140697,"cl":15789400,"nip":-1983776,"rev":14034741,"op":-1086562,"ni":-2061685,"asset":48374187,"liab":32169823,"eq":16204364,"opm":-7.7,"npm":-14.7,"roe":-23.6,"dr":198.5,"cr":76.9,"debt":24213976,"cash":3883632,"stfi":57786,"netdebt":20272558,"ndr":125.1,"dep":50.1,"ocf":-119961,"capex":9372613,"fcf":-9492575},"2023":{"ca":9377298,"cl":13026109,"nip":-736487,"rev":12897212,"op":-581824,"ni":-748137,"asset":33250717,"liab":21784212,"eq":11466505,"opm":-4.5,"npm":-5.8,"roe":null,"dr":190.0,"cr":72.0,"debt":16625828,"cash":3455319,"stfi":219438,"netdebt":12951070,"ndr":112.9,"dep":50.0,"ocf":-1558273,"capex":9788695,"fcf":-11346968}},"di":{"단기차입금":3825757,"유동성장기부채":4446364,"유동리스":92176,"사채및장기차입금":12273750,"리스":149777}},"SK에너지":{"n":"","sub":"7","y":{"2025":{"ca":10410189,"cl":9831673,"nip":-163368,"rev":39288074,"op":-171722,"ni":-163368,"asset":16442790,"liab":11748275,"eq":4694514,"opm":-0.4,"npm":-0.4,"roe":-3.7,"dr":250.3,"cr":105.9,"debt":2165606,"cash":2724485,"stfi":25322,"netdebt":-584201,"ndr":-12.4,"dep":13.2,"ocf":-386868,"capex":245584,"fcf":-632452},"2024":{"ca":11826391,"cl":10653664,"nip":-462549,"rev":43419439,"op":53760,"ni":-462549,"asset":17331612,"liab":13075235,"eq":4256376,"opm":0.1,"npm":-1.1,"roe":-10.3,"dr":307.2,"cr":111.0,"debt":2725339,"cash":3789963,"stfi":33379,"netdebt":-1098004,"ndr":-25.8,"dep":15.7,"ocf":751343,"capex":294318,"fcf":457025},"2023":{"ca":12539910,"cl":11475779,"nip":154860,"rev":43625465,"op":409219,"ni":155052,"asset":19295664,"liab":14612235,"eq":4683429,"opm":0.9,"npm":0.4,"roe":null,"dr":312.0,"cr":109.3,"debt":3380946,"cash":4017212,"stfi":26365,"netdebt":-662631,"ndr":-14.1,"dep":17.5,"ocf":3334886,"capex":467168,"fcf":2867718}},"di":{"유동성사채":639829,"유동리스":64076,"사채":1258039,"리스":203663}},"SK에코플랜트":{"n":"","sub":"","y":{"2025":{"ca":9399332,"cl":9049464,"nip":106769,"rev":12191569,"op":315944,"ni":23149,"asset":18008771,"liab":11841070,"eq":6167700,"opm":2.6,"npm":0.2,"roe":2.9,"dr":192.0,"cr":103.9,"debt":5418748,"cash":2939690,"stfi":256965,"netdebt":2222094,"ndr":36.0,"dep":30.1,"ocf":208669,"capex":484468,"fcf":-275800},"2024":{"ca":7016272,"cl":9470151,"nip":-73662,"rev":8734562,"op":226069,"ni":-95856,"asset":16855656,"liab":11794448,"eq":5061208,"opm":2.6,"npm":-1.1,"roe":-2.2,"dr":233.0,"cr":74.1,"debt":6734953,"cash":1682213,"stfi":89755,"netdebt":4962985,"ndr":98.1,"dep":40.0,"ocf":143213,"capex":342945,"fcf":-199732},"2023":{"ca":6187123,"cl":6827346,"nip":-99694,"rev":8091330,"op":130898,"ni":-45644,"asset":14901360,"liab":10486810,"eq":4414550,"opm":1.6,"npm":-0.6,"roe":null,"dr":237.6,"cr":90.6,"debt":5601848,"cash":1174859,"stfi":136830,"netdebt":4290159,"ndr":97.2,"dep":37.6,"ocf":-731943,"capex":265073,"fcf":-997017}},"di":{"단기차입금":1864527,"유동성장기부채":1182991,"유동리스":65243,"사채및장기차입금":2187740,"비유동리스":118247}},"SK지오센트릭":{"n":"2025 순손실에 중단영업손실 5,226억 포함","sub":"16","y":{"2025":{"ca":3725764,"cl":3171400,"nip":-882014,"rev":11501382,"op":-148395,"ni":-870715,"asset":7608376,"liab":4882600,"eq":2725776,"opm":-1.3,"npm":-7.6,"roe":-28.6,"dr":179.1,"cr":117.5,"debt":2630675,"cash":1183906,"stfi":16000,"netdebt":1430769,"ndr":52.5,"dep":34.6,"ocf":401321,"capex":255276,"fcf":146045},"2024":{"ca":3405708,"cl":3080349,"nip":-392559,"rev":12746222,"op":-27450,"ni":-388552,"asset":8326957,"liab":4760164,"eq":3566793,"opm":-0.2,"npm":-3.0,"roe":-11.0,"dr":133.5,"cr":110.6,"debt":2925183,"cash":1083062,"stfi":18025,"netdebt":1824096,"ndr":51.1,"dep":35.1,"ocf":198047,"capex":314153,"fcf":-116106},"2023":{"ca":3033059,"cl":1929520,"nip":1587,"rev":13015622,"op":170436,"ni":8638,"asset":8015462,"liab":4317602,"eq":3697860,"opm":1.3,"npm":0.1,"roe":null,"dr":116.8,"cr":157.2,"debt":2659142,"cash":840131,"stfi":37203,"netdebt":1781808,"ndr":48.2,"dep":33.2,"ocf":590965,"capex":295300,"fcf":295665}},"di":{"단기차입금":333091,"유동성장기부채":630410,"유동리스":4436,"사채및장기차입금":1656214,"리스":6523}},"SK가스":{"n":"정정보고서(2026.08.13) 기준","sub":"","y":{"2025":{"ca":2512990,"cl":1894992,"nip":235250,"rev":7676319,"op":442831,"ni":233819,"asset":8031886,"liab":4887337,"eq":3144549,"opm":5.8,"npm":3.0,"roe":8.2,"dr":155.4,"cr":132.6,"debt":3986028,"cash":625880,"stfi":182082,"netdebt":3178066,"ndr":101.1,"dep":49.6,"ocf":672580,"capex":296690,"fcf":375890},"2024":{"ca":2465128,"cl":2021019,"nip":194022,"rev":7095902,"op":287177,"ni":192954,"asset":7604211,"liab":4816206,"eq":2788005,"opm":4.0,"npm":2.7,"roe":7.2,"dr":172.7,"cr":122.0,"debt":3827058,"cash":584523,"stfi":197482,"netdebt":3045053,"ndr":109.2,"dep":50.3,"ocf":373331,"capex":351111,"fcf":22220},"2023":{"ca":2341330,"cl":1460924,"nip":323943,"rev":6992257,"op":303595,"ni":323943,"asset":6102395,"liab":3498261,"eq":2604134,"opm":4.3,"npm":4.6,"roe":null,"dr":134.3,"cr":160.3,"debt":2837611,"cash":493752,"stfi":285727,"netdebt":2058131,"ndr":79.0,"dep":46.5,"ocf":617223,"capex":570733,"fcf":46490}},"di":{"단기이자부차입금":580137,"유동성사채":369904,"유동리스":189627,"사채":997749,"장기이자부차입금":748751,"리스":1099859}}};
 const ORDER=['SK㈜','SK하이닉스','SK이노베이션','SK텔레콤','SK디스커버리','SK온','SK에너지','SK에코플랜트','SK지오센트릭','SK브로드밴드','SK가스','SK실트론','SK스퀘어','SK네트웍스','SKC','SK케미칼','SK바이오팜'];
+// 사업부문별 매출·영업이익 (백만원). 각 연도 합계 = 연결 매출·영업이익
+// SK이노베이션: III-1 사업부문별 주요 재무정보 / 주석 36 (2025 기타부문 영업손실은 주석값 −187,181 사용)
+// SK온: II. 사업부문별 재무정보 (석유사업은 2024.11 SK트레이딩인터내셔널 합병 이후, 윤활유는 2025.11 SK엔무브 합병 이후)
+const SEG={
+ 'SK온':{'2025':[['배터리',6978231,-931381],['석유',49013095,533975],['기유·윤활유 (11~12월)',756286,123665]],'2024':[['배터리',6266560,-1127040],['석유 (11~12월)',7768181,40478]],'2023':[['배터리',12897212,-581824]]},
+ 'SK이노베이션':{'2025':[['에너지·화학',61314030,1119858],['배터리·소재',7062217,-1165078],['E&S',11863100,681085],['기타',56707,-187181]],'2024':[['에너지·화학',65456185,1886846],['배터리·소재',6399948,-1409527],['E&S (11~12월)',2353734,123377],['기타',59780,-244999]],'2023':[['에너지·화학',63581012,2670166],['배터리·소재',13089962,-570787],['기타',84765,-218766]]}
+};
+const SEGCOL=['#0066cc','#4fa3f0','#1d1d1f','#8e8e93'];
+function segTop(c){const s=SEG[c]&&SEG[c][Y];if(!s)return '';const t=s.reduce((a,x)=>a+x[1],0);const top=s.slice().sort((a,b)=>b[1]-a[1])[0];return `매출의 ${Math.round(top[1]/t*100)}%가 ${top[0].replace(/ \(.*\)/,'')}`}
 const PARENT={'SK에너지':'SK이노베이션','SK지오센트릭':'SK이노베이션','SK온':'SK이노베이션','SK가스':'SK디스커버리','SK브로드밴드':'SK텔레콤'};
 let Y='2025';
 const jo=v=>(v/1e6);
@@ -356,7 +422,7 @@ function renderHM(){
   $('#hm').innerHTML=`<thead><tr><th>멤버사 · ${Y}년</th>${COLS.map(([k,l,u])=>`<th><button type="button" data-k="${k}" aria-sort="${sortK===k?(sortDir<0?'descending':'ascending'):'none'}">${l}${sortK===k?(sortDir<0?' ↓':' ↑'):''}</button><small>${u}</small></th>`).join('')}</tr></thead><tbody>${rows.map(c=>{
     const ov=PARENT[c]?`<span class="ov">${OVIC}연결 중복 · ${PARENT[c]}에 포함</span>`:'';
     if(!D[c])return `<tr class="pend"><td><span class="nm">${c}<small>보고서 대기 ${ov}</small></span></td>${COLS.map(()=>'<td class="c">—</td>').join('')}</tr>`;
-    return `<tr data-co="${c}" class="${c===selCo?'sel':''}" style="cursor:pointer"><td><span class="nm">${c}${ov?`<small>${ov}</small>`:''}</span></td>${COLS.map(([k,,,dir,f])=>{const v=m(c)[k];return `<td class="c" style="background:${dir?tint(ranks[k](v)):'transparent'}">${f(v)}</td>`}).join('')}</tr>`}).join('')}</tbody>`;
+    const st=segTop(c);return `<tr data-co="${c}" class="${c===selCo?'sel':''}" style="cursor:pointer"><td><span class="nm">${c}${ov?`<small>${ov}</small>`:''}${st?`<small style="color:var(--ink-48)">${st}</small>`:''}</span></td>${COLS.map(([k,,,dir,f])=>{const v=m(c)[k];return `<td class="c" style="background:${dir?tint(ranks[k](v)):'transparent'}">${f(v)}</td>`}).join('')}</tr>`}).join('')}</tbody>`;
 }
 $('#hm').addEventListener('click',e=>{
   const b=e.target.closest('th button');if(b){const k=b.dataset.k;if(sortK===k)sortDir*=-1;else{sortK=k;sortDir=-1}renderHM();return}
@@ -419,7 +485,7 @@ function spark(vals,goodUp,fmt){
 }
 function renderSM(){
   $('#sm').innerHTML=have.map(c=>{const y=['2023','2024','2025'].map(k=>D[c].y[k]);
-    return `<div class="smc"><h3>${c}${PARENT[c]?`<span class="ov">${OVIC}${PARENT[c]}에 포함</span>`:''}</h3><div class="mini">
+    return `<div class="smc"><h3>${c}${PARENT[c]?`<span class="ov">${OVIC}${PARENT[c]}에 포함</span>`:''}</h3>${c==='SK온'?'<p style="margin:4px 0 0;font-size:12px;color:var(--ink-48)">2024.11부터 석유 트레이딩 매출이 더해져 매출 추이가 끊깁니다</p>':''}<div class="mini">
       <div><small>매출(조원)</small><b class="num">${fj(y[2].rev)}</b>${spark(y.map(v=>v.rev),true)}</div>
       <div><small>영업이익률</small><b class="num">${fp(y[2].opm)}</b>${spark(y.map(v=>v.opm),true)}</div>
       <div><small>부채비율</small><b class="num">${y[2].dr.toFixed(0)}%</b>${spark(y.map(v=>v.dr),false)}</div></div></div>`}).join('');
@@ -428,6 +494,15 @@ function renderSM(){
 /* detail */
 $('#dsel').innerHTML=ORDER.map(c=>`<button class="chip" type="button" data-co="${c}" ${D[c]?'':'disabled title="보고서 대기"'} aria-pressed="${c===selCo}">${c}</button>`).join('');
 $('#dsel').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b||b.disabled)return;selCo=b.dataset.co;renderHM();renderDetail()});
+function segCard(c){
+  const s=SEG[c]&&SEG[c][Y]; if(!s) return '';
+  const t=s.reduce((a,x)=>a+x[1],0), ot=s.reduce((a,x)=>a+x[2],0);
+  const note=c==='SK온'?'SK온 연결 매출의 대부분은 배터리가 아니라 석유 트레이딩입니다. 2024.11 SK트레이딩인터내셔널, 2025.2 SK엔텀, 2025.11 SK엔무브를 흡수합병했습니다. 배터리 사업만 보려면 배터리 행을 보세요.':'SK이노베이션 연결 기준 보고부문입니다. 에너지·화학 부문 안에 석유(47.2조, 2025), 화학, 윤활유 사업이 들어 있습니다.';
+  return `<div class="card segcard"><h3>사업부문별 매출·영업이익 · ${Y}</h3><p class="sub">부문 합계는 연결 매출 ${fj(t)}조, 영업이익 ${fj(ot)}조와 일치합니다.</p>
+  <div class="segbar">${s.map((x,i)=>`<span style="flex-grow:${x[1]};background:${SEGCOL[i]}" title="${x[0]} ${fj(x[1])}조">${x[1]/t>.08?x[0].replace(/ \(.*\)/,''):''}</span>`).join('')}</div>
+  <table class="segt"><thead><tr><th>부문</th><th>매출(조원)</th><th>비중</th><th>영업이익(조원)</th><th>영업이익률</th></tr></thead><tbody>${s.map((x,i)=>`<tr><td><i style="background:${SEGCOL[i]}"></i>${x[0]}</td><td class="num">${fj(x[1])}</td><td class="num">${(x[1]/t*100).toFixed(1)}%</td><td class="num" style="color:${x[2]<0?'var(--bad)':'inherit'}">${fj(x[2])}</td><td class="num">${(x[2]/x[1]*100).toFixed(1)}%</td></tr>`).join('')}</tbody></table>
+  <p class="segnote">${note}</p></div>`;
+}
 function renderDetail(){
   $$('#dsel .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.co===selCo));
   const c=selCo,d=D[c],m=d.y[Y];
@@ -452,8 +527,27 @@ function renderDetail(){
     <div class="pl" style="margin-top:8px">${cf.map(([l,v])=>`<div class="plrow"><span>${l}</span><div class="bar"><span style="left:0;width:${Math.abs(v)/cfMax*100}%;background:${v<0?'#c2410c':'#0066cc'}"></span></div><span class="v num">${fj(v)}조</span></div>`).join('')}</div>
     <h3 style="margin-top:22px;font-size:17px">차입금 구성 · 2025년말</h3>
     <ul class="dlist">${Object.entries(d.di).map(([k,v])=>`<li><span>${k}</span><span class="num">${fj(v)}조</span></li>`).join('')}<li style="font-weight:600"><span>총차입금 (${Y})</span><span class="num">${fj(m.debt)}조</span></li><li><span>현금성자산 + 단기금융상품 (${Y})</span><span class="num">${fj(m.cash+m.stfi)}조</span></li></ul>
-  </div>`;
+  </div>${segCard(c)}`;
 }
+
+/* petro */
+const GROSS=[['SK온 석유사업',49013095,'#2997ff'],['SK에너지',39288074,'#0066cc'],['SK지오센트릭 (화학)',11501382,'#4fa3f0'],['SK온 기유·윤활유 (11~12월)',756286,'#7cc0ff'],['그 밖의 계열 법인·조정 (잔여)',134615081-49013095-39288074-11501382-756286,'#636366']];
+const NET=[['석유사업 외부 매출',47190300,'#2997ff'],['화학·윤활유 등',61314230-47190300,'#4fa3f0'],['내부거래 제거',73300851,'#3a3a3c']];
+const OPR=[['SK온 석유사업',533975],['SK에너지',-171722],['SK지오센트릭',-148395],['SK온 기유·윤활유',123665],['에너지·화학 부문 합계',1119858]];
+let pv='gross';
+function renderPetro(){
+  const tot=134615081;
+  const bar=(arr,lbl)=>`<div class="frow"><div class="fl"><span>${lbl}</span><b class="num">${fj(arr.reduce((a,x)=>a+x[1],0))}조</b></div><div class="fbar">${arr.map(([n,v,c])=>`<span data-n="${n}" data-v="${v}" style="flex-grow:${v};background:${c}" class="${c==='#7cc0ff'?'lt':''}">${v/tot>.07?n.replace(/ \(.*\)/,'')+' '+fj(v):''}</span>`).join('')}</div></div>`;
+  $('#flow').innerHTML=pv==='gross'
+    ? bar(GROSS,'법인별 매출 합계 = 에너지·화학 부문 총매출 (내부거래 포함)')+`<p class="fnote" style="margin-top:0">SK에너지는 연결 매출, SK온은 부문 매출입니다. 같은 기름이 SK에너지 매출로 한 번, SK온 트레이딩 매출로 또 한 번 잡힙니다.</p>`
+    : bar(NET,'에너지·화학 부문 총매출 134.6조의 행방')+`<p class="fnote" style="margin-top:0">134.6조 중 73.3조는 계열 안에서 오간 거래라 지워지고, 계열 밖으로 판 61.3조가 남습니다. 그중 석유사업이 47.2조입니다.</p>`;
+}
+const opMax=Math.max(...OPR.map(x=>Math.abs(x[1])));
+$('#oprows').innerHTML=OPR.map(([n,v],i)=>{const w=Math.abs(v)/opMax*50;return `<div class="oprow" style="${i===OPR.length-1?'border-top:1px solid var(--line-dark);margin-top:6px;padding-top:12px;font-weight:600':''}"><span>${n}</span><div class="ax"><i></i><span style="${v>=0?`left:50%;width:${w}%`:`left:${50-w}%;width:${w}%`};background:${v>=0?'#2997ff':'#ff8a5c'}"></span></div><span class="v num">${fj(v)}</span></div>`}).join('')+'<p class="fnote" style="margin-top:8px">법인별 영업이익도 내부거래 손익이 섞여 있어, 네 법인을 더한 값(0.34조)과 부문 합계(1.12조)는 다릅니다. 차이에는 SK인천석유화학 등 멤버사가 아닌 법인이 포함됩니다.</p>';
+$('#trend3').innerHTML=[['2023',63581012,2670166],['2024',65456185,1886846],['2025',61314030,1119858]].map(([y,r,o])=>`<div><small>${y} 외부 매출 · 영업이익</small><b class="num">${fj(r)}조</b> <span class="num" style="font-size:14px;color:var(--body-muted)">영업이익 ${fj(o)}조 (${(o/r*100).toFixed(1)}%)</span></div>`).join('');
+$('#flow').addEventListener('pointermove',e=>{const sp=e.target.closest('.fbar span');if(!sp){hideTip();return}showTip(e,`<b>${sp.dataset.n}</b><div class="r"><span>금액</span><span class="num">${fj(+sp.dataset.v)}조</span></div><div class="r"><span>부문 총매출 대비</span><span class="num">${(+sp.dataset.v/134615081*100).toFixed(1)}%</span></div>`)});
+$('#flow').addEventListener('pointerleave',hideTip);
+seg($('#petroSeg'),v=>{pv=v;renderPetro()}); renderPetro();
 
 /* year control */
 const setYear=seg($('#yearSeg'),v=>{Y=v;renderAll()});
