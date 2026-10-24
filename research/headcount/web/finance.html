@@ -271,7 +271,7 @@ footer{background:var(--parchment);color:var(--ink-80);padding-block:48px;border
       <div id="oprows"></div>
       <p class="eyebrow" style="margin-top:32px">에너지·화학 부문 3개년 (SK이노베이션 연결, 내부거래 제거 후)</p>
       <div class="trend3" id="trend3"></div>
-      <p class="fnote">출처: SK이노베이션 2025 사업보고서 「II. 사업의 내용」(석유사업 47조 1,903억원, 매출 비중 59%)과 주석 36 영업부문 정보(에너지 및 화학 총매출 134.6조, 조정 −73.3조), SK온·SK에너지·SK지오센트릭 2025 사업보고서. 법인별 막대는 각 회사가 보고한 매출(내부거래 포함)이라 더하면 계열 실적보다 커집니다. '그 밖의 계열 법인·조정'은 부문 총매출 134.6조에서 네 항목을 뺀 잔여값으로, SK인천석유화학 등 멤버사가 아닌 법인과 기준 차이를 포함합니다. 화학·윤활유 등 14.1조는 부문 외부 매출 61.3조에서 석유사업 47.2조를 뺀 값입니다.</p>
+      <p class="fnote">출처: SK이노베이션 2025 사업보고서 「II. 사업의 내용」(석유사업 47조 1,903억원, 매출 비중 59%)과 주석 36 영업부문 정보(에너지 및 화학 총매출 134.6조, 조정 −73.3조), SK온·SK에너지·SK지오센트릭 2025 사업보고서. 법인별 막대는 각 회사가 보고한 매출(내부거래 포함)이라 더하면 계열 실적보다 커집니다. '그 밖의 계열 법인·조정'은 부문 총매출 134.6조에서 네 항목을 뺀 잔여값으로, 합병 전 SK엔무브(1~10월)와 SK인천석유화학 등 멤버사가 아닌 법인, 기준 차이를 포함합니다. 화학 8조 9,202억원과 윤활유 3조 8,361억원은 SK이노베이션 사업보고서 본문 수치이고, 기타 1.4조는 부문 외부 매출 61.3조에서 세 사업을 뺀 잔여값입니다.</p>
     </div>
   </div>
 </section>
@@ -497,7 +497,7 @@ $('#dsel').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b|
 function segCard(c){
   const s=SEG[c]&&SEG[c][Y]; if(!s) return '';
   const t=s.reduce((a,x)=>a+x[1],0), ot=s.reduce((a,x)=>a+x[2],0);
-  const note=c==='SK온'?'SK온 연결 매출의 대부분은 배터리가 아니라 석유 트레이딩입니다. 2024.11 SK트레이딩인터내셔널, 2025.2 SK엔텀, 2025.11 SK엔무브를 흡수합병했습니다. 배터리 사업만 보려면 배터리 행을 보세요.':'SK이노베이션 연결 기준 보고부문입니다. 에너지·화학 부문 안에 석유(47.2조, 2025), 화학, 윤활유 사업이 들어 있습니다.';
+  const note=c==='SK온'?'SK온 연결 매출의 대부분은 배터리가 아니라 석유 트레이딩입니다. 석유사업은 2024.11 합병한 SK트레이딩인터내셔널과 2025.2 합병한 SK엔텀(탱크터미널), 기유·윤활유사업은 2025.11 합병한 SK엔무브입니다. 윤활유는 합병 이후 11~12월분만 SK온에 잡히고, 1~10월분은 SK이노베이션 연결에 SK엔무브 실적으로 들어 있습니다.':'SK이노베이션 연결 기준 보고부문입니다. 에너지·화학 부문 안에 석유(47.2조, 2025), 화학, 윤활유 사업이 들어 있습니다.';
   return `<div class="card segcard"><h3>사업부문별 매출·영업이익 · ${Y}</h3><p class="sub">부문 합계는 연결 매출 ${fj(t)}조, 영업이익 ${fj(ot)}조와 일치합니다.</p>
   <div class="segbar">${s.map((x,i)=>`<span style="flex-grow:${x[1]};background:${SEGCOL[i]}" title="${x[0]} ${fj(x[1])}조">${x[1]/t>.08?x[0].replace(/ \(.*\)/,''):''}</span>`).join('')}</div>
   <table class="segt"><thead><tr><th>부문</th><th>매출(조원)</th><th>비중</th><th>영업이익(조원)</th><th>영업이익률</th></tr></thead><tbody>${s.map((x,i)=>`<tr><td><i style="background:${SEGCOL[i]}"></i>${x[0]}</td><td class="num">${fj(x[1])}</td><td class="num">${(x[1]/t*100).toFixed(1)}%</td><td class="num" style="color:${x[2]<0?'var(--bad)':'inherit'}">${fj(x[2])}</td><td class="num">${(x[2]/x[1]*100).toFixed(1)}%</td></tr>`).join('')}</tbody></table>
@@ -531,16 +531,16 @@ function renderDetail(){
 }
 
 /* petro */
-const GROSS=[['SK온 석유사업',49013095,'#2997ff'],['SK에너지',39288074,'#0066cc'],['SK지오센트릭 (화학)',11501382,'#4fa3f0'],['SK온 기유·윤활유 (11~12월)',756286,'#7cc0ff'],['그 밖의 계열 법인·조정 (잔여)',134615081-49013095-39288074-11501382-756286,'#636366']];
-const NET=[['석유사업 외부 매출',47190300,'#2997ff'],['화학·윤활유 등',61314230-47190300,'#4fa3f0'],['내부거래 제거',73300851,'#3a3a3c']];
+const GROSS=[['SK온 석유사업',49013095,'#2997ff'],['SK에너지',39288074,'#0066cc'],['SK지오센트릭 (화학)',11501382,'#4fa3f0'],['SK온 기유·윤활유 (11~12월)',756286,'#7cc0ff'],['그 밖의 계열 법인·조정 (SK엔무브 1~10월, SK인천석유화학 등 · 잔여)',134615081-49013095-39288074-11501382-756286,'#636366']];
+const NET=[['석유사업',47190300,'#2997ff'],['화학사업',8920200,'#4fa3f0'],['윤활유사업 (SK엔무브, 1~12월)',3836100,'#7cc0ff'],['기타 (석유개발 등, 잔여)',61314230-47190300-8920200-3836100,'#8e8e93'],['내부거래 제거',73300851,'#3a3a3c']];
 const OPR=[['SK온 석유사업',533975],['SK에너지',-171722],['SK지오센트릭',-148395],['SK온 기유·윤활유',123665],['에너지·화학 부문 합계',1119858]];
 let pv='gross';
 function renderPetro(){
   const tot=134615081;
-  const bar=(arr,lbl)=>`<div class="frow"><div class="fl"><span>${lbl}</span><b class="num">${fj(arr.reduce((a,x)=>a+x[1],0))}조</b></div><div class="fbar">${arr.map(([n,v,c])=>`<span data-n="${n}" data-v="${v}" style="flex-grow:${v};background:${c}" class="${c==='#7cc0ff'?'lt':''}">${v/tot>.07?n.replace(/ \(.*\)/,'')+' '+fj(v):''}</span>`).join('')}</div></div>`;
+  const bar=(arr,lbl)=>`<div class="frow"><div class="fl"><span>${lbl}</span><b class="num">${fj(arr.reduce((a,x)=>a+x[1],0))}조</b></div><div class="fbar">${arr.map(([n,v,c])=>`<span data-n="${n}" data-v="${v}" style="flex-grow:${v};background:${c}" class="${c==='#7cc0ff'?'lt':''}">${v/tot>.025?n.replace(/ \(.*\)/,'')+(v/tot>.07?' '+fj(v):''):''}</span>`).join('')}</div></div>`;
   $('#flow').innerHTML=pv==='gross'
     ? bar(GROSS,'법인별 매출 합계 = 에너지·화학 부문 총매출 (내부거래 포함)')+`<p class="fnote" style="margin-top:0">SK에너지는 연결 매출, SK온은 부문 매출입니다. 같은 기름이 SK에너지 매출로 한 번, SK온 트레이딩 매출로 또 한 번 잡힙니다.</p>`
-    : bar(NET,'에너지·화학 부문 총매출 134.6조의 행방')+`<p class="fnote" style="margin-top:0">134.6조 중 73.3조는 계열 안에서 오간 거래라 지워지고, 계열 밖으로 판 61.3조가 남습니다. 그중 석유사업이 47.2조입니다.</p>`;
+    : bar(NET,'에너지·화학 부문 총매출 134.6조의 행방')+`<p class="fnote" style="margin-top:0">134.6조 중 73.3조는 계열 안에서 오간 거래라 지워지고, 계열 밖으로 판 61.3조가 남습니다. 석유 47.2조, 화학 8.9조, 윤활유 3.8조입니다. 윤활유는 1~10월 SK엔무브(SK이노베이션 자회사), 11~12월 SK온 기유·윤활유 부문으로 잡혔고 연결에서는 1년치가 모두 들어 있습니다.</p>`;
 }
 const opMax=Math.max(...OPR.map(x=>Math.abs(x[1])));
 $('#oprows').innerHTML=OPR.map(([n,v],i)=>{const w=Math.abs(v)/opMax*50;return `<div class="oprow" style="${i===OPR.length-1?'border-top:1px solid var(--line-dark);margin-top:6px;padding-top:12px;font-weight:600':''}"><span>${n}</span><div class="ax"><i></i><span style="${v>=0?`left:50%;width:${w}%`:`left:${50-w}%;width:${w}%`};background:${v>=0?'#2997ff':'#ff8a5c'}"></span></div><span class="v num">${fj(v)}</span></div>`}).join('')+'<p class="fnote" style="margin-top:8px">법인별 영업이익도 내부거래 손익이 섞여 있어, 네 법인을 더한 값(0.34조)과 부문 합계(1.12조)는 다릅니다. 차이에는 SK인천석유화학 등 멤버사가 아닌 법인이 포함됩니다.</p>';
