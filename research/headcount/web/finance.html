@@ -1,0 +1,464 @@
+<title>SUPEX 멤버사 재무구조</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;600;700&display=swap">
+<style>
+/* Layout: 밝은 타일과 어두운 타일이 교차하고 색 전환이 섹션 구분선이 된다. 데이터가 '제품'이고 UI는 물러난다. */
+:root{
+  --primary:#0066cc; --primary-focus:#0071e3; --primary-on-dark:#2997ff; --series-2:#4fa3f0;
+  --good:#0066cc; --bad:#c2410c;
+  --ink:#1d1d1f; --on-dark:#ffffff; --body-muted:#cccccc; --ink-80:#333333; --ink-48:#7a7a7a;
+  --divider-soft:#f0f0f0; --hairline:#e0e0e0; --grid:#ececee;
+  --canvas:#ffffff; --parchment:#f5f5f7; --pearl:#fafafc;
+  --tile-1:#272729; --tile-2:#2a2a2c; --tile-3:#252527; --black:#000000;
+  --frost:rgba(245,245,247,.8); --line-a:rgba(0,0,0,.08); --line-dark:rgba(255,255,255,.14);
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Noto Sans KR",system-ui,sans-serif;
+  --text:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Noto Sans KR",system-ui,sans-serif;
+  --r-sm:8px; --r-md:11px; --r-lg:18px; --r-pill:9999px;
+  --ease:cubic-bezier(.25,.1,.25,1);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(52px + env(safe-area-inset-top,0px))}
+body{background:var(--canvas);color:var(--ink);font-family:var(--text);font-size:17px;line-height:1.47;letter-spacing:-.374px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--frost)}
+:focus-visible{outline:2px solid var(--primary-focus);outline-offset:2px}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.num{font-variant-numeric:tabular-nums}
+
+.gnav{background:var(--black);color:var(--on-dark);height:44px}
+.gnav .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.gnav b{font-size:12px;font-weight:600;letter-spacing:-.12px;white-space:nowrap}
+.gnav span{font-size:12px;letter-spacing:-.12px;color:#bdbdbd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.subnav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--frost);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line-a)}
+.subnav .wrap{height:52px;display:flex;align-items:center;gap:18px}
+.subnav .cat{font-family:var(--display);font-size:21px;font-weight:600;letter-spacing:.231px;white-space:nowrap}
+.subnav .links{display:flex;gap:18px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.subnav .links::-webkit-scrollbar{display:none}
+.subnav .links a{font-size:12px;letter-spacing:-.12px;color:var(--ink-80);text-decoration:none;white-space:nowrap;padding:6px 0;position:relative}
+.subnav .links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink);transform:scaleX(0);transition:transform .3s var(--ease)}
+.subnav .links a.on{color:var(--ink)}.subnav .links a.on::after{transform:scaleX(1)}
+.yearsel{flex:none}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;background:var(--primary);width:0}
+
+.tile{padding-block:80px}
+.t-light{background:var(--canvas)}.t-parch{background:var(--parchment)}
+.t-dark{background:var(--tile-1);color:var(--on-dark)}.t-dark2{background:var(--tile-2);color:var(--on-dark)}
+.eyebrow{font-size:14px;font-weight:600;letter-spacing:-.224px;color:var(--ink-48);margin:0 0 10px}
+.t-dark .eyebrow,.t-dark2 .eyebrow{color:var(--body-muted)}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
+.h-hero{font-size:56px;font-weight:600;line-height:1.07;letter-spacing:-.28px}
+.h-lg{font-size:40px;font-weight:600;line-height:1.1;letter-spacing:-.4px}
+.lead-airy{font-size:21px;font-weight:300;line-height:1.5;margin:16px 0 0;max-width:38em;color:var(--ink-80)}
+.t-dark .lead-airy,.t-dark2 .lead-airy,.t-dark .muted,.t-dark2 .muted{color:var(--body-muted)}
+.muted{color:var(--ink-80)}
+.head{max-width:800px;margin:0 auto 40px;text-align:center}
+.head .lead-airy{margin-left:auto;margin-right:auto}
+.rv{transition:transform .9s var(--ease)}.rv.pre{transform:translateY(24px)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}.rv.pre{transform:none}}
+
+.btn{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--primary);color:#fff;border-radius:var(--r-pill);padding:11px 22px;font-size:17px;letter-spacing:-.374px;text-decoration:none;transition:transform .15s var(--ease)}
+.btn:active{transform:scale(.95)}
+.btn.ghost{background:transparent;color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary)}
+.seg{display:inline-flex;background:#e8e8ed;border-radius:var(--r-pill);padding:3px;position:relative}
+.t-dark .seg,.t-dark2 .seg{background:#3a3a3c}
+.seg button{border:0;background:transparent;padding:6px 14px;border-radius:var(--r-pill);font-size:14px;letter-spacing:-.224px;position:relative;z-index:1;white-space:nowrap}
+.seg .pill{position:absolute;top:3px;bottom:3px;left:3px;border-radius:var(--r-pill);background:var(--canvas);transition:left .3s var(--ease),width .3s var(--ease);box-shadow:0 0 0 1px var(--line-a)}
+.t-dark .seg .pill,.t-dark2 .seg .pill{background:#636366;box-shadow:none}
+.chip{border:0;background:var(--canvas);border-radius:var(--r-pill);box-shadow:inset 0 0 0 1px var(--hairline);padding:8px 14px;font-size:14px;letter-spacing:-.224px;transition:transform .15s var(--ease);white-space:nowrap}
+.chip:active{transform:scale(.95)}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff;box-shadow:none}
+.chip:disabled{color:#b0b0b5;cursor:not-allowed;box-shadow:inset 0 0 0 1px var(--divider-soft)}
+.controls{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;justify-content:center;margin-bottom:24px}
+
+/* overlap tag */
+.ov{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;letter-spacing:-.08px;color:var(--bad);white-space:nowrap}
+.ov svg{flex:none}
+
+/* hero */
+.hero{padding-block:72px 64px;text-align:center}
+.hero .lead{font-family:var(--display);font-size:24px;line-height:1.3;letter-spacing:.1px;margin:16px auto 0;max-width:30em;color:var(--ink-80)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:44px}
+.kpi{padding:8px}
+.kpi .v{font-family:var(--display);font-size:44px;font-weight:600;letter-spacing:-.6px;line-height:1.05}
+.kpi .v small{font-size:20px}
+.kpi p{margin:8px 0 0;font-size:14px;letter-spacing:-.224px;color:var(--ink-80)}
+.remark{max-width:860px;margin:44px auto 0;text-align:left;background:var(--parchment);border-radius:var(--r-lg);padding:22px 24px;display:grid;grid-template-columns:28px minmax(0,1fr);gap:14px}
+.remark h3{font-size:17px;font-weight:600;letter-spacing:-.374px}
+.remark p{margin:6px 0 0;font-size:15px;color:var(--ink-80);letter-spacing:-.24px}
+.remark a{color:var(--primary);text-decoration:none}
+
+/* overlap map */
+.omap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.ogrp{background:rgba(255,255,255,.04);border-radius:22px;padding:18px;box-shadow:inset 0 0 0 1px var(--line-dark)}
+.ogrp .p{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.ogrp .p b{font-family:var(--display);font-size:21px;font-weight:600}
+.ogrp .p span{font-size:13px;color:var(--body-muted)}
+.ogrp .kids{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.ogrp .kid{padding:8px 12px;border-radius:var(--r-md);font-size:14px;letter-spacing:-.224px;background:var(--tile-3);box-shadow:inset 0 0 0 1px var(--line-dark)}
+.ogrp .kid.pending{color:#8e8e93;box-shadow:inset 0 0 0 1px dashed}
+.ogrp .kid small{display:block;font-size:11px;color:var(--body-muted)}
+.ogrp .why{margin:12px 0 0;font-size:13px;color:var(--body-muted);letter-spacing:-.2px}
+
+/* heatmap */
+.hm-wrap{overflow-x:auto;border-radius:var(--r-lg);box-shadow:0 0 0 1px var(--hairline);background:var(--canvas)}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:940px;font-size:14px;letter-spacing:-.224px}
+th,td{padding:10px 12px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--divider-soft)}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--canvas);z-index:1}
+thead th{font-size:12px;color:var(--ink-48);font-weight:600;background:var(--pearl);vertical-align:bottom}
+thead th:first-child{background:var(--pearl)}
+thead th button{border:0;background:transparent;padding:0;font:inherit;color:inherit;display:inline-flex;gap:4px;align-items:center}
+thead th button[aria-sort="descending"],thead th button[aria-sort="ascending"]{color:var(--ink)}
+thead th small{display:block;font-weight:400;font-size:11px;color:var(--ink-48)}
+td.c{position:relative;font-variant-numeric:tabular-nums;transition:background .3s}
+td .nm{font-weight:600}
+td .nm small{display:block;font-weight:400}
+tr.pend td{color:#a1a1a6}
+tr:hover td{background-image:linear-gradient(rgba(0,0,0,.025),rgba(0,0,0,.025))}
+tr.sel td{box-shadow:inset 0 2px 0 -1px var(--primary-focus),inset 0 -2px 0 -1px var(--primary-focus)}
+.hm-legend{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:14px;font-size:12px;color:var(--ink-48);flex-wrap:wrap}
+.hm-legend .scale{display:flex;gap:2px}
+.hm-legend .scale i{width:26px;height:12px;border-radius:3px;display:block}
+
+/* scatter */
+.sc-box{background:var(--canvas);border-radius:var(--r-lg);box-shadow:0 0 0 1px var(--hairline);padding:12px}
+svg text{font-family:var(--text)}
+.sc-dot{transition:cx .8s var(--ease),cy .8s var(--ease),r .8s var(--ease);cursor:pointer}
+.sc-lab{pointer-events:none}
+.sc-note{font-size:12px;color:var(--ink-48);text-align:center;margin-top:10px}
+
+/* small multiples */
+.sm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.smc{background:var(--canvas);border-radius:var(--r-lg);box-shadow:0 0 0 1px var(--hairline);padding:18px;min-width:0}
+.smc h3{font-size:17px;font-weight:600;letter-spacing:-.374px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.smc .mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.smc .mini div{min-width:0}
+.smc .mini small{display:block;font-size:11px;color:var(--ink-48);letter-spacing:-.08px}
+.smc .mini b{display:block;font-size:15px;font-weight:600;letter-spacing:-.2px}
+.smc .mini svg{display:block;width:100%;height:34px;margin-top:4px;overflow:visible}
+
+/* detail */
+.dsel{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:28px}
+.dgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px}
+.card{background:var(--canvas);border-radius:var(--r-lg);box-shadow:0 0 0 1px var(--hairline);padding:24px;min-width:0}
+.card h3{font-size:21px;font-weight:600;letter-spacing:.231px;margin-bottom:4px}
+.card .sub{font-size:13px;color:var(--ink-48);margin:0 0 16px;letter-spacing:-.2px}
+.bsv{display:grid;grid-template-columns:1fr 1fr;gap:14px;height:280px}
+.bscol{display:flex;flex-direction:column;gap:2px}
+.bscol .cap{font-size:12px;color:var(--ink-48);text-align:center;margin-bottom:4px}
+.bsseg{border-radius:4px;display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;font-size:12px;letter-spacing:-.12px;text-align:center;transition:flex-grow .7s var(--ease);min-height:0;overflow:hidden;padding:0 4px}
+.bsseg b{font-size:14px}
+.bsseg.lt{color:var(--ink)}
+.pl{display:grid;gap:12px}
+.plrow{display:grid;grid-template-columns:90px minmax(0,1fr) 92px;gap:10px;align-items:center;font-size:14px;letter-spacing:-.224px}
+.plrow .bar{height:20px;position:relative}
+.plrow .bar span{position:absolute;top:0;bottom:0;border-radius:4px;transition:all .7s var(--ease)}
+.plrow .bar .zero{position:absolute;top:-4px;bottom:-4px;width:1px;background:var(--hairline)}
+.plrow .v{text-align:right;font-weight:600}
+.kvs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}
+.kvs div{background:var(--parchment);border-radius:var(--r-md);padding:12px}
+.kvs small{display:block;font-size:12px;color:var(--ink-48)}
+.kvs b{font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.2px}
+.dlist{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:6px;font-size:14px;letter-spacing:-.224px}
+.dlist li{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--divider-soft);padding:6px 0}
+.dnote{margin-top:14px;font-size:13px;color:var(--ink-80);letter-spacing:-.2px}
+
+.tip{position:fixed;z-index:70;pointer-events:none;background:var(--canvas);color:var(--ink);border-radius:var(--r-md);box-shadow:0 0 0 1px var(--line-a),0 8px 24px rgba(0,0,0,.12);padding:12px 14px;font-size:13px;letter-spacing:-.2px;min-width:200px;opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s}
+.tip.show{opacity:1;transform:none}
+.tip b{display:block;font-size:14px;margin-bottom:6px}
+.tip .r{display:flex;justify-content:space-between;gap:16px}
+
+.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.check{background:var(--parchment);border-radius:var(--r-lg);padding:20px;display:grid;grid-template-columns:26px minmax(0,1fr);gap:14px}
+.check h3{font-size:17px;font-weight:600;letter-spacing:-.374px}
+.check p{margin:4px 0 0;font-size:14px;color:var(--ink-80);letter-spacing:-.224px}
+.check .res{display:inline-block;margin-top:8px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:var(--r-pill);background:var(--canvas);box-shadow:inset 0 0 0 1px var(--hairline)}
+.defs{margin-top:40px;background:var(--parchment);border-radius:var(--r-lg);padding:24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 28px;font-size:14px;letter-spacing:-.224px}
+.defs b{font-weight:600}
+
+footer{background:var(--parchment);color:var(--ink-80);padding-block:48px;border-top:1px solid var(--hairline)}
+.legal{font-size:12px;line-height:1.6;color:var(--ink-48);letter-spacing:-.12px;margin:0}
+
+@media (max-width:1068px){.h-hero{font-size:40px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.sm{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:833px){.gnav span{display:none}.omap,.dgrid,.checks,.defs{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.tile{padding-block:56px}.h-hero{font-size:34px}.h-lg{font-size:30px}.lead-airy{font-size:18px}.hero .lead{font-size:19px}.kpi .v{font-size:32px}.sm{grid-template-columns:minmax(0,1fr)}.subnav .cat{font-size:17px}.subnav .links{display:none}.subnav .yearsel{margin-left:auto}.bsv{height:240px}.kvs{grid-template-columns:repeat(3,minmax(0,1fr))}.kvs b{font-size:17px}}
+</style>
+
+<header class="gnav"><div class="wrap"><b>SUPEX Financials 2025</b><span>2025 사업보고서 · 연결재무제표 · 단위 조원(별도 표기 제외)</span></div></header>
+<div class="subnav"><div class="wrap">
+  <span class="cat">재무구조</span>
+  <div class="links" id="spy"><a href="#top">요약</a><a href="#overlap">중복 유의</a><a href="#score">스코어카드</a><a href="#map">수익×안정</a><a href="#trend">3개년</a><a href="#detail">회사 상세</a><a href="#verify">검증</a></div>
+  <div class="seg yearsel" id="yearSeg" role="group" aria-label="연도"><span class="pill"></span><button type="button" data-v="2023" aria-pressed="false">2023</button><button type="button" data-v="2024" aria-pressed="false">2024</button><button type="button" data-v="2025" aria-pressed="true">2025</button></div>
+</div><div class="progress" id="progress"></div></div>
+
+<main>
+<section class="t-light hero" id="top">
+  <div class="wrap">
+    <p class="eyebrow">SUPEX추구협의회 멤버사 · 연결 기준 · <span id="yLabel">2025</span>년</p>
+    <h1 class="h-hero">17개 법인의 재무구조를<br>한 줄에 놓고 봅니다.</h1>
+    <p class="lead">지금은 9개사 데이터가 들어와 있습니다. 나머지 8개사는 사업보고서를 받는 대로 같은 기준으로 채웁니다.</p>
+    <div class="kpis rv" id="kpis"></div>
+    <div class="remark" role="note">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="12" fill="#c2410c"/><path d="M13 7v7.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="13" cy="18.6" r="1.5" fill="#fff"/></svg>
+      <div><h3>연결 기준이라 일부 자회사는 중복 집계될 수 있습니다</h3>
+      <p><b>SK에너지·SK지오센트릭·SK온(SK엔무브 포함)</b>은 SK이노베이션 연결에, <b>SK가스</b>는 SK디스커버리 연결에, <b>SK브로드밴드</b>는 SK텔레콤 연결에 다시 들어 있습니다. 회사별 비교에는 문제가 없지만, 금액을 더하면 같은 실적이 두 번 잡힙니다. 그래서 이 페이지는 합계를 내지 않습니다. <a href="#overlap">겹치는 범위 보기</a></p></div>
+    </div>
+  </div>
+</section>
+
+<section class="tile t-dark" id="overlap">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="eyebrow">중복 집계 유의</p>
+      <h2 class="h-lg">누가 누구의 연결 안에 있나.</h2>
+      <p class="lead-airy">모회사 연결재무제표에는 자회사 실적이 100% 합쳐져 있습니다. 표에서 <span style="color:#ff9f6e;font-weight:600">연결 중복</span> 표시가 붙은 회사는 모회사 숫자 안에 다시 들어 있으니 유의해서 보세요.</p>
+    </div>
+    <div class="omap rv" id="omap"></div>
+  </div>
+</section>
+
+<section class="tile t-light" id="score">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="eyebrow">스코어카드</p>
+      <h2 class="h-lg">어디가 튼튼하고, 어디가 버거운가.</h2>
+      <p class="lead-airy">칸의 색은 같은 열 안에서의 상대 위치입니다. 파란색일수록 유리하고 주황색일수록 불리합니다. 열 이름을 누르면 정렬되고, 행을 누르면 아래 상세로 이동합니다.</p>
+    </div>
+    <div class="hm-wrap rv"><table id="hm"></table></div>
+    <div class="hm-legend"><span>불리</span><span class="scale" id="hmScale"></span><span>유리</span><span style="margin-left:14px">회색: 보고서 대기</span><span class="ov" style="margin-left:14px"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 3h5v6H2z M7 6h3" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>연결 중복</span></div>
+  </div>
+</section>
+
+<section class="tile t-parch" id="map">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="eyebrow">수익성 × 안정성</p>
+      <h2 class="h-lg">오른쪽 아래로 갈수록 무겁습니다.</h2>
+      <p class="lead-airy">가로축은 부채비율, 세로축은 영업이익률, 원 크기는 매출입니다. 위쪽 연도 선택이나 재생 버튼으로 2023년에서 2025년까지 움직임을 볼 수 있습니다.</p>
+    </div>
+    <div class="controls"><button class="btn" type="button" id="play">2023 → 2025 재생</button></div>
+    <div class="sc-box rv"><svg id="sc" viewBox="0 0 960 520" role="img" aria-label="부채비율 대비 영업이익률 산점도"></svg><div class="hm-legend" style="margin-top:4px"><span style="display:inline-flex;gap:6px;align-items:center"><i style="width:12px;height:12px;border-radius:50%;background:#0066cc;opacity:.78;display:inline-block"></i>모회사·독립 법인</span><span style="display:inline-flex;gap:6px;align-items:center"><i style="width:12px;height:12px;border-radius:50%;background:#4fa3f0;opacity:.78;display:inline-block"></i>다른 멤버사 연결에 포함</span></div></div>
+    <p class="sc-note">SK하이닉스는 영업이익률이 높아 위쪽에 멀리 떨어져 있습니다. 점선은 부채비율 200%, 영업이익률 0%입니다.</p>
+  </div>
+</section>
+
+<section class="tile t-light" id="trend">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="eyebrow">3개년 추이</p>
+      <h2 class="h-lg">방향을 보면 다음이 보입니다.</h2>
+      <p class="lead-airy">회사마다 매출, 영업이익률, 부채비율의 2023→2025 흐름입니다. 마지막 점의 색은 개선(파랑)과 악화(주황)를 뜻합니다.</p>
+    </div>
+    <div class="sm rv" id="sm"></div>
+  </div>
+</section>
+
+<section class="tile t-parch" id="detail">
+  <div class="wrap">
+    <div class="head rv"><p class="eyebrow">회사 상세</p><h2 class="h-lg" id="dTitle">재무상태표의 모양.</h2></div>
+    <div class="dsel" id="dsel"></div>
+    <div class="dgrid" id="dgrid"></div>
+  </div>
+</section>
+
+<section class="tile t-light" id="verify">
+  <div class="wrap">
+    <div class="head rv"><p class="eyebrow">검증과 정의</p><h2 class="h-lg">숫자는 원문과 두 번 맞췄습니다.</h2></div>
+    <div class="checks rv">
+      <div class="check"><svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="12" fill="#0066cc"/><path d="M8 13.4l3.4 3.4L18.2 9.6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><div><h3>항등식</h3><p>자산 = 부채 + 자본을 9개사 3개년 모두 확인했습니다.</p><span class="res">27 / 27 일치</span></div></div>
+      <div class="check"><svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="12" fill="#0066cc"/><path d="M8 13.4l3.4 3.4L18.2 9.6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><div><h3>요약재무정보 ↔ 본 재무제표</h3><p>2025년 자산·부채·자본·매출·영업이익을 III-1 요약표와 III-2 연결재무제표에서 각각 읽어 대조했습니다.</p><span class="res">45 / 45 일치 (반올림 1백만원 이내)</span></div></div>
+      <div class="check"><svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="#0066cc" stroke-width="2"/><path d="M13 2a11 11 0 0 1 0 22z" fill="#0066cc"/></svg><div><h3>차입금·현금흐름</h3><p>연결재무상태표의 차입 계정과 연결현금흐름표 원값을 단위(원·천원·백만원)를 맞춰 옮겼습니다. 계정 구분은 회사마다 달라 주석과의 대조는 아직 하지 않았습니다.</p><span class="res">원값 추출 완료 · 주석 대조 전</span></div></div>
+      <div class="check"><svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="#7a7a7a" stroke-width="1.6" stroke-dasharray="3 3"/></svg><div><h3>나머지 8개사</h3><p>SK㈜, SK브로드밴드, SK실트론, SK스퀘어, SK네트웍스, SKC, SK케미칼, SK바이오팜은 보고서를 받으면 같은 절차로 채웁니다.</p><span class="res">대기</span></div></div>
+    </div>
+    <div class="defs rv">
+      <div><b>부채비율</b> 부채총계 ÷ 자본총계</div>
+      <div><b>순차입금</b> 차입금·사채·리스부채 − 현금성자산 − 단기금융상품</div>
+      <div><b>순차입금비율</b> 순차입금 ÷ 자본총계</div>
+      <div><b>차입금의존도</b> 총차입금(리스 포함) ÷ 자산총계</div>
+      <div><b>유동비율</b> 유동자산 ÷ 유동부채</div>
+      <div><b>ROE</b> 지배주주 순이익 ÷ 평균 지배주주지분 (2023년은 전기 자료가 없어 생략)</div>
+      <div><b>FCF</b> 영업활동현금흐름 − 유형자산 취득</div>
+      <div><b>영업이익률</b> 영업이익 ÷ 매출(SKT는 영업수익)</div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><p class="legal">출처: 각 사 2025 사업보고서 「III. 재무에 관한 사항」 1. 요약재무정보, 2. 연결재무제표(연결재무상태표·포괄손익계산서·현금흐름표). SK가스는 2026.08.13 정정보고서. 금액은 백만원 원값을 조원으로 환산해 표시했습니다. 멤버사 범위는 「'26년 멤버사 및 협의회 위원 건제」(2026.1.)의 21개사 중 별도 법인 17개사이며, SK이노베이션 E&amp;S·SK엔무브·SK㈜ AX·SK에코플랜트 머티리얼즈는 모회사 연결에 포함됩니다. 원자료와 계산 스크립트: research/headcount/scripts/fin_build.py. 작성 2026-10-24.</p></div></footer>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const D={"SK하이닉스":{"n":"","sub":"53","y":{"2025":{"ca":69458073,"cl":37378999,"nip":42919287,"rev":97146675,"op":47206319,"ni":42947902,"asset":176107659,"liab":55440908,"eq":120666751,"opm":48.6,"npm":44.2,"roe":44.2,"dr":45.9,"cr":185.8,"debt":24757848,"cash":14923766,"stfi":20018487,"netdebt":-10184405,"ndr":-8.4,"dep":14.1,"ocf":53373126,"capex":27518924,"fcf":25854202},"2024":{"ca":42278887,"cl":24965444,"nip":19788681,"rev":66192960,"op":23467319,"ni":19796902,"asset":119855209,"liab":45939505,"eq":73915704,"opm":35.5,"npm":29.9,"roe":31.1,"dr":62.2,"cr":169.3,"debt":25452109,"cash":11205117,"stfi":2951246,"netdebt":11295746,"ndr":15.3,"dep":21.2,"ocf":29795885,"capex":15945534,"fcf":13850351},"2023":{"ca":30468100,"cl":21007810,"nip":-9112428,"rev":32765719,"op":-7730313,"ni":-9137547,"asset":100330165,"liab":46826413,"eq":53503752,"opm":-23.6,"npm":-27.9,"roe":null,"dr":87.5,"cr":145.0,"debt":32498506,"cash":7587329,"stfi":1333589,"netdebt":23577588,"ndr":44.1,"dep":32.4,"ocf":4278191,"capex":8325138,"fcf":-4046947}},"di":{"유동차입금":8161757,"유동리스":547296,"비유동차입금":14086148,"비유동리스":1962647}},"SK이노베이션":{"n":"사채및장기차입금은 유동성분 포함 여부를 주석으로 확인하지 않음","sub":"224","y":{"2025":{"ca":42795276,"cl":41057102,"nip":-3347850,"rev":80296054,"op":448684,"ni":-5436441,"asset":105608481,"liab":69216985,"eq":36391496,"opm":0.6,"npm":-6.8,"roe":-14.4,"dr":190.2,"cr":104.2,"debt":32292098,"cash":16091552,"stfi":253292,"netdebt":15947254,"ndr":43.8,"dep":30.6,"ocf":2283053,"capex":5367187,"fcf":-3084135},"2024":{"ca":36318432,"cl":37725576,"nip":-2259957,"rev":74269647,"op":355697,"ni":-2372483,"asset":110530098,"liab":70881189,"eq":39648909,"opm":0.5,"npm":-3.2,"roe":-9.6,"dr":178.8,"cr":96.3,"debt":41584286,"cash":15865084,"stfi":235915,"netdebt":25483286,"ndr":64.3,"dep":37.6,"ocf":2232522,"capex":10027894,"fcf":-7795372},"2023":{"ca":33279589,"cl":29399179,"nip":256250,"rev":76755739,"op":1880613,"ni":554894,"asset":80835513,"liab":50815546,"eq":30019967,"opm":2.5,"npm":0.7,"roe":null,"dr":169.3,"cr":113.2,"debt":27475913,"cash":13074426,"stfi":317884,"netdebt":14083603,"ndr":46.9,"dep":34.0,"ocf":5367896,"capex":11238126,"fcf":-5870230}},"di":{"단기차입금":7201713,"유동리스":482294,"사채및장기차입금":22764518,"리스":1843573}},"SK텔레콤":{"n":"","sub":"19","y":{"2025":{"ca":6727130,"cl":6529775,"nip":408410,"rev":17099213,"op":1073215,"ni":375084,"asset":30107783,"liab":17152491,"eq":12955292,"opm":6.3,"npm":2.2,"roe":3.3,"dr":132.4,"cr":103.0,"debt":10372827,"cash":1490024,"stfi":186643,"netdebt":8696160,"ndr":67.1,"dep":34.5,"ocf":3923847,"capex":2206567,"fcf":1717280},"2024":{"ca":7476682,"cl":9224278,"nip":1250155,"rev":17940609,"op":1823409,"ni":1387095,"asset":30515255,"liab":18687621,"eq":11827634,"opm":10.2,"npm":7.7,"roe":10.8,"dr":158.0,"cr":81.1,"debt":10764831,"cash":2023721,"stfi":323890,"netdebt":8417220,"ndr":71.2,"dep":35.3,"ocf":5087285,"capex":2487360,"fcf":2599925},"2023":{"ca":6585602,"cl":6993980,"nip":1093611,"rev":17608511,"op":1753204,"ni":1145937,"asset":30119227,"liab":17890828,"eq":12228399,"opm":10.0,"npm":6.5,"roe":null,"dr":146.3,"cr":94.2,"debt":10655154,"cash":1454978,"stfi":294934,"netdebt":8905242,"ndr":72.8,"dep":35.4,"ocf":4947205,"capex":2973882,"fcf":1973323}},"di":{"단기차입금":130000,"유동성사채및장기차입금":1122584,"유동리스":407959,"사채":7294445,"장기차입금":300000,"장기리스":1117839}},"SK디스커버리":{"n":"","sub":"","y":{"2025":{"ca":5465970,"cl":3743633,"nip":129347,"rev":10164014,"op":361354,"ni":144627,"asset":16299659,"liab":9448413,"eq":6851246,"opm":3.6,"npm":1.4,"roe":4.5,"dr":137.9,"cr":146.0,"debt":7262069,"cash":1314193,"stfi":1133836,"netdebt":4814040,"ndr":70.3,"dep":44.6,"ocf":660831,"capex":753522,"fcf":-92691},"2024":{"ca":5540202,"cl":3840553,"nip":36471,"rev":9039603,"op":172558,"ni":47105,"asset":15142281,"liab":8639258,"eq":6503023,"opm":1.9,"npm":0.5,"roe":1.3,"dr":132.8,"cr":144.3,"debt":6436013,"cash":1381256,"stfi":1050821,"netdebt":4003937,"ndr":61.6,"dep":42.5,"ocf":115392,"capex":805863,"fcf":-690471},"2023":{"ca":4868514,"cl":2829893,"nip":196717,"rev":8939217,"op":256702,"ni":255475,"asset":12271294,"liab":6185893,"eq":6085401,"opm":2.9,"npm":2.9,"roe":null,"dr":101.7,"cr":172.0,"debt":4769074,"cash":1015984,"stfi":1492358,"netdebt":2260731,"ndr":37.2,"dep":38.9,"ocf":600646,"capex":952276,"fcf":-351630}},"di":{"단기이자부차입금":1320287,"유동성이자부차입금":754706,"유동리스":198416,"사채":1633413,"장기이자부차입금":2239666,"리스":1115581}},"SK온":{"n":"2024.11 SK트레이딩인터내셔널, 2025.2 SK엔텀, 2025.11 SK엔무브 흡수합병으로 2025 매출 급증","sub":"26","y":{"2025":{"ca":20864608,"cl":21462880,"nip":-3123101,"rev":56747612,"op":-273741,"ni":-5364668,"asset":49313986,"liab":34880624,"eq":14433362,"opm":-0.5,"npm":-9.5,"roe":-29.6,"dr":241.7,"cr":97.2,"debt":20787824,"cash":5046424,"stfi":106826,"netdebt":15634573,"ndr":108.3,"dep":42.2,"ocf":868711,"capex":3583976,"fcf":-2715265},"2024":{"ca":12140697,"cl":15789400,"nip":-1983776,"rev":14034741,"op":-1086562,"ni":-2061685,"asset":48374187,"liab":32169823,"eq":16204364,"opm":-7.7,"npm":-14.7,"roe":-23.6,"dr":198.5,"cr":76.9,"debt":24213976,"cash":3883632,"stfi":57786,"netdebt":20272558,"ndr":125.1,"dep":50.1,"ocf":-119961,"capex":9372613,"fcf":-9492575},"2023":{"ca":9377298,"cl":13026109,"nip":-736487,"rev":12897212,"op":-581824,"ni":-748137,"asset":33250717,"liab":21784212,"eq":11466505,"opm":-4.5,"npm":-5.8,"roe":null,"dr":190.0,"cr":72.0,"debt":16625828,"cash":3455319,"stfi":219438,"netdebt":12951070,"ndr":112.9,"dep":50.0,"ocf":-1558273,"capex":9788695,"fcf":-11346968}},"di":{"단기차입금":3825757,"유동성장기부채":4446364,"유동리스":92176,"사채및장기차입금":12273750,"리스":149777}},"SK에너지":{"n":"","sub":"7","y":{"2025":{"ca":10410189,"cl":9831673,"nip":-163368,"rev":39288074,"op":-171722,"ni":-163368,"asset":16442790,"liab":11748275,"eq":4694514,"opm":-0.4,"npm":-0.4,"roe":-3.7,"dr":250.3,"cr":105.9,"debt":2165606,"cash":2724485,"stfi":25322,"netdebt":-584201,"ndr":-12.4,"dep":13.2,"ocf":-386868,"capex":245584,"fcf":-632452},"2024":{"ca":11826391,"cl":10653664,"nip":-462549,"rev":43419439,"op":53760,"ni":-462549,"asset":17331612,"liab":13075235,"eq":4256376,"opm":0.1,"npm":-1.1,"roe":-10.3,"dr":307.2,"cr":111.0,"debt":2725339,"cash":3789963,"stfi":33379,"netdebt":-1098004,"ndr":-25.8,"dep":15.7,"ocf":751343,"capex":294318,"fcf":457025},"2023":{"ca":12539910,"cl":11475779,"nip":154860,"rev":43625465,"op":409219,"ni":155052,"asset":19295664,"liab":14612235,"eq":4683429,"opm":0.9,"npm":0.4,"roe":null,"dr":312.0,"cr":109.3,"debt":3380946,"cash":4017212,"stfi":26365,"netdebt":-662631,"ndr":-14.1,"dep":17.5,"ocf":3334886,"capex":467168,"fcf":2867718}},"di":{"유동성사채":639829,"유동리스":64076,"사채":1258039,"리스":203663}},"SK에코플랜트":{"n":"","sub":"","y":{"2025":{"ca":9399332,"cl":9049464,"nip":106769,"rev":12191569,"op":315944,"ni":23149,"asset":18008771,"liab":11841070,"eq":6167700,"opm":2.6,"npm":0.2,"roe":2.9,"dr":192.0,"cr":103.9,"debt":5418748,"cash":2939690,"stfi":256965,"netdebt":2222094,"ndr":36.0,"dep":30.1,"ocf":208669,"capex":484468,"fcf":-275800},"2024":{"ca":7016272,"cl":9470151,"nip":-73662,"rev":8734562,"op":226069,"ni":-95856,"asset":16855656,"liab":11794448,"eq":5061208,"opm":2.6,"npm":-1.1,"roe":-2.2,"dr":233.0,"cr":74.1,"debt":6734953,"cash":1682213,"stfi":89755,"netdebt":4962985,"ndr":98.1,"dep":40.0,"ocf":143213,"capex":342945,"fcf":-199732},"2023":{"ca":6187123,"cl":6827346,"nip":-99694,"rev":8091330,"op":130898,"ni":-45644,"asset":14901360,"liab":10486810,"eq":4414550,"opm":1.6,"npm":-0.6,"roe":null,"dr":237.6,"cr":90.6,"debt":5601848,"cash":1174859,"stfi":136830,"netdebt":4290159,"ndr":97.2,"dep":37.6,"ocf":-731943,"capex":265073,"fcf":-997017}},"di":{"단기차입금":1864527,"유동성장기부채":1182991,"유동리스":65243,"사채및장기차입금":2187740,"비유동리스":118247}},"SK지오센트릭":{"n":"2025 순손실에 중단영업손실 5,226억 포함","sub":"16","y":{"2025":{"ca":3725764,"cl":3171400,"nip":-882014,"rev":11501382,"op":-148395,"ni":-870715,"asset":7608376,"liab":4882600,"eq":2725776,"opm":-1.3,"npm":-7.6,"roe":-28.6,"dr":179.1,"cr":117.5,"debt":2630675,"cash":1183906,"stfi":16000,"netdebt":1430769,"ndr":52.5,"dep":34.6,"ocf":401321,"capex":255276,"fcf":146045},"2024":{"ca":3405708,"cl":3080349,"nip":-392559,"rev":12746222,"op":-27450,"ni":-388552,"asset":8326957,"liab":4760164,"eq":3566793,"opm":-0.2,"npm":-3.0,"roe":-11.0,"dr":133.5,"cr":110.6,"debt":2925183,"cash":1083062,"stfi":18025,"netdebt":1824096,"ndr":51.1,"dep":35.1,"ocf":198047,"capex":314153,"fcf":-116106},"2023":{"ca":3033059,"cl":1929520,"nip":1587,"rev":13015622,"op":170436,"ni":8638,"asset":8015462,"liab":4317602,"eq":3697860,"opm":1.3,"npm":0.1,"roe":null,"dr":116.8,"cr":157.2,"debt":2659142,"cash":840131,"stfi":37203,"netdebt":1781808,"ndr":48.2,"dep":33.2,"ocf":590965,"capex":295300,"fcf":295665}},"di":{"단기차입금":333091,"유동성장기부채":630410,"유동리스":4436,"사채및장기차입금":1656214,"리스":6523}},"SK가스":{"n":"정정보고서(2026.08.13) 기준","sub":"","y":{"2025":{"ca":2512990,"cl":1894992,"nip":235250,"rev":7676319,"op":442831,"ni":233819,"asset":8031886,"liab":4887337,"eq":3144549,"opm":5.8,"npm":3.0,"roe":8.2,"dr":155.4,"cr":132.6,"debt":3986028,"cash":625880,"stfi":182082,"netdebt":3178066,"ndr":101.1,"dep":49.6,"ocf":672580,"capex":296690,"fcf":375890},"2024":{"ca":2465128,"cl":2021019,"nip":194022,"rev":7095902,"op":287177,"ni":192954,"asset":7604211,"liab":4816206,"eq":2788005,"opm":4.0,"npm":2.7,"roe":7.2,"dr":172.7,"cr":122.0,"debt":3827058,"cash":584523,"stfi":197482,"netdebt":3045053,"ndr":109.2,"dep":50.3,"ocf":373331,"capex":351111,"fcf":22220},"2023":{"ca":2341330,"cl":1460924,"nip":323943,"rev":6992257,"op":303595,"ni":323943,"asset":6102395,"liab":3498261,"eq":2604134,"opm":4.3,"npm":4.6,"roe":null,"dr":134.3,"cr":160.3,"debt":2837611,"cash":493752,"stfi":285727,"netdebt":2058131,"ndr":79.0,"dep":46.5,"ocf":617223,"capex":570733,"fcf":46490}},"di":{"단기이자부차입금":580137,"유동성사채":369904,"유동리스":189627,"사채":997749,"장기이자부차입금":748751,"리스":1099859}}};
+const ORDER=['SK㈜','SK하이닉스','SK이노베이션','SK텔레콤','SK디스커버리','SK온','SK에너지','SK에코플랜트','SK지오센트릭','SK브로드밴드','SK가스','SK실트론','SK스퀘어','SK네트웍스','SKC','SK케미칼','SK바이오팜'];
+const PARENT={'SK에너지':'SK이노베이션','SK지오센트릭':'SK이노베이션','SK온':'SK이노베이션','SK가스':'SK디스커버리','SK브로드밴드':'SK텔레콤'};
+let Y='2025';
+const jo=v=>(v/1e6);
+const fj=(v,d)=>{if(v==null)return '—';const x=jo(v);const dd=d!=null?d:(Math.abs(x)>=10?1:2);return x.toLocaleString('ko-KR',{minimumFractionDigits:dd,maximumFractionDigits:dd})};
+const fp=v=>v==null?'—':v.toFixed(1)+'%';
+const OVIC='<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 3h5v6H2z M7 6h3" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>';
+
+/* reveal */
+if(!reduce&&'IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.remove('pre');io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px'});$$('.rv').forEach(el=>{if(el.getBoundingClientRect().top>innerHeight){el.classList.add('pre');io.observe(el)}})}
+/* spy */
+const links=$$('#spy a'),secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+function onScroll(){const y=scrollY+innerHeight*.35;let c=0;secs.forEach((s,i)=>{if(s&&s.offsetTop<=y)c=i});links.forEach((a,i)=>a.classList.toggle('on',i===c));const h=document.documentElement.scrollHeight-innerHeight;$('#progress').style.width=(h>0?scrollY/h*100:0)+'%'}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+/* seg */
+function seg(root,cb){const pill=root.querySelector('.pill'),bs=Array.from(root.querySelectorAll('button'));const move=b=>{pill.style.left=b.offsetLeft+'px';pill.style.width=b.offsetWidth+'px'};const cur=()=>bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0];bs.forEach(b=>b.addEventListener('click',()=>{bs.forEach(x=>x.setAttribute('aria-pressed',x===b));move(b);cb(b.dataset.v)}));const set=v=>{const b=bs.find(x=>x.dataset.v===v);bs.forEach(x=>x.setAttribute('aria-pressed',x===b));move(b)};requestAnimationFrame(()=>move(cur()));addEventListener('resize',()=>move(cur()));if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>move(cur()));return set}
+const tip=$('#tip');
+function showTip(e,html){tip.innerHTML=html;const x=Math.min(e.clientX+16,innerWidth-tip.offsetWidth-12),y=Math.min(e.clientY+16,innerHeight-tip.offsetHeight-12);tip.style.left=x+'px';tip.style.top=y+'px';tip.classList.add('show')}
+function hideTip(){tip.classList.remove('show')}
+const have=ORDER.filter(c=>D[c]);
+
+/* KPIs */
+function renderKPI(){
+  const m=c=>D[c].y[Y];
+  const best=(k,dir)=>have.filter(c=>m(c)[k]!=null).sort((a,b)=>dir*(m(b)[k]-m(a)[k]))[0];
+  const lossN=have.filter(c=>m(c).op<0).length;
+  const hiDR=have.filter(c=>m(c).dr>200).length;
+  const bo=best('opm',1);
+  $('#kpis').innerHTML=`<div class="kpi"><div class="v num">9<small> / 17</small></div><p>데이터 확보 법인</p></div><div class="kpi"><div class="v num">${lossN}<small>개사</small></div><p>${Y}년 영업적자</p></div><div class="kpi"><div class="v num">${hiDR}<small>개사</small></div><p>부채비율 200% 초과</p></div><div class="kpi"><div class="v num">${fp(m(bo).opm)}</div><p>최고 영업이익률 · ${bo}</p></div>`;
+  $('#yLabel').textContent=Y;
+}
+
+/* overlap map */
+const OGRP=[
+  ['SK이노베이션','연결 종속회사 224개 (2025년말)',[['SK에너지','멤버사 #7'],['SK지오센트릭','멤버사 #10'],['SK온','멤버사 #6 · SK엔무브 합병분 포함']],'SK이노베이션 연결 매출 80.3조에는 세 회사의 매출이 들어 있습니다. 내부거래는 제거된 금액입니다.'],
+  ['SK디스커버리','주요 종속회사 항목에 SK가스·SK케미칼 기재',[['SK가스','멤버사 #12'],['SK케미칼','멤버사 #18 · 보고서 대기',1]],'SK디스커버리 자본총계 6.9조 중 비지배지분이 3.9조로, 자회사 몫이 큽니다.'],
+  ['SK텔레콤','연결 종속회사 19개 (SK브로드밴드 포함)',[['SK브로드밴드','멤버사 #11 · 보고서 대기',1]],'SK브로드밴드 보고서가 들어오면 같은 표시를 붙입니다.'],
+  ['SK㈜','지주회사 · 보고서 대기',[['SK이노베이션 · SK텔레콤 등','연결 범위는 SK㈜ 보고서로 확인 예정',1]],'SK㈜ 연결은 그룹 대부분을 포함할 가능성이 높아, 다른 멤버사와 금액을 더하면 크게 중복됩니다.']
+];
+$('#omap').innerHTML=OGRP.map(([p,s,k,w])=>`<div class="ogrp"><div class="p"><b>${p}</b><span>${s}</span></div><div class="kids">${k.map(([n,d,pd])=>`<div class="kid ${pd?'pending':''}">${n}<small>${d}</small></div>`).join('')}</div><p class="why">${w}</p></div>`).join('');
+
+/* heatmap */
+const COLS=[
+  ['rev','매출','조원',1,v=>fj(v)],['op','영업이익','조원',1,v=>fj(v)],['opm','영업이익률','%',1,fp],['roe','ROE','%',1,fp],
+  ['dr','부채비율','%',-1,v=>v==null?'—':v.toFixed(0)+'%'],['ndr','순차입금비율','%',-1,v=>v==null?'—':v.toFixed(0)+'%'],['dep','차입금의존도','%',-1,fp],['cr','유동비율','%',1,v=>v==null?'—':v.toFixed(0)+'%'],['fcf','FCF','조원',1,v=>fj(v)],['asset','자산','조원',0,v=>fj(v)]
+];
+const GOOD=[0,102,204], BAD=[194,65,12];
+function tint(t){ // t in [-1,1], +1 favorable
+  const c=t>=0?GOOD:BAD, a=Math.min(1,Math.abs(t))*0.32;
+  return `rgba(${c[0]},${c[1]},${c[2]},${a.toFixed(3)})`;
+}
+$('#hmScale').innerHTML=[-1,-.5,0,.5,1].map(t=>`<i style="background:${t===0?'#f5f5f7':tint(t)}"></i>`).join('');
+let sortK=null, sortDir=-1, selCo='SK이노베이션';
+function renderHM(){
+  const m=c=>D[c].y[Y];
+  const ranks={};
+  COLS.forEach(([k,,,dir])=>{if(!dir)return;const vals=have.map(c=>m(c)[k]).filter(v=>v!=null).sort((a,b)=>a-b);ranks[k]=v=>{if(v==null||vals.length<2)return 0;const i=vals.indexOf(v);return dir*((i/(vals.length-1))*2-1)}});
+  let rows=ORDER.slice();
+  if(sortK){rows.sort((a,b)=>{const va=D[a]?m(a)[sortK]:null,vb=D[b]?m(b)[sortK]:null;if(va==null&&vb==null)return 0;if(va==null)return 1;if(vb==null)return -1;return sortDir*(vb-va)})}
+  $('#hm').innerHTML=`<thead><tr><th>멤버사 · ${Y}년</th>${COLS.map(([k,l,u])=>`<th><button type="button" data-k="${k}" aria-sort="${sortK===k?(sortDir<0?'descending':'ascending'):'none'}">${l}${sortK===k?(sortDir<0?' ↓':' ↑'):''}</button><small>${u}</small></th>`).join('')}</tr></thead><tbody>${rows.map(c=>{
+    const ov=PARENT[c]?`<span class="ov">${OVIC}연결 중복 · ${PARENT[c]}에 포함</span>`:'';
+    if(!D[c])return `<tr class="pend"><td><span class="nm">${c}<small>보고서 대기 ${ov}</small></span></td>${COLS.map(()=>'<td class="c">—</td>').join('')}</tr>`;
+    return `<tr data-co="${c}" class="${c===selCo?'sel':''}" style="cursor:pointer"><td><span class="nm">${c}${ov?`<small>${ov}</small>`:''}</span></td>${COLS.map(([k,,,dir,f])=>{const v=m(c)[k];return `<td class="c" style="background:${dir?tint(ranks[k](v)):'transparent'}">${f(v)}</td>`}).join('')}</tr>`}).join('')}</tbody>`;
+}
+$('#hm').addEventListener('click',e=>{
+  const b=e.target.closest('th button');if(b){const k=b.dataset.k;if(sortK===k)sortDir*=-1;else{sortK=k;sortDir=-1}renderHM();return}
+  const r=e.target.closest('tr[data-co]');if(r){selCo=r.dataset.co;renderHM();renderDetail();$('#detail').scrollIntoView({behavior:reduce?'auto':'smooth'})}
+});
+
+/* scatter */
+const W=960,H=520,P={l:70,r:30,t:24,b:56};
+const X0=0,X1=300,Y0=-5,Y1=56;
+const sx=v=>P.l+(Math.max(X0,Math.min(X1,v))-X0)/(X1-X0)*(W-P.l-P.r);
+const sy=v=>P.t+(Y1-Math.max(Y0,Math.min(Y1,v)))/(Y1-Y0)*(H-P.t-P.b);
+const maxRev=Math.max(...have.flatMap(c=>['2023','2024','2025'].map(y=>D[c].y[y].rev)));
+const sr=v=>6+Math.sqrt(Math.max(v,0)/maxRev)*34;
+function buildScatter(){
+  const g=[];
+  for(let x=0;x<=300;x+=50)g.push(`<line x1="${sx(x)}" x2="${sx(x)}" y1="${P.t}" y2="${H-P.b}" stroke="#ececee"/><text x="${sx(x)}" y="${H-P.b+20}" text-anchor="middle" font-size="12" fill="#7a7a7a">${x}%</text>`);
+  for(let y=0;y<=50;y+=10)g.push(`<line x1="${P.l}" x2="${W-P.r}" y1="${sy(y)}" y2="${sy(y)}" stroke="#ececee"/><text x="${P.l-10}" y="${sy(y)+4}" text-anchor="end" font-size="12" fill="#7a7a7a">${y}%</text>`);
+  g.push(`<line x1="${sx(200)}" x2="${sx(200)}" y1="${P.t}" y2="${H-P.b}" stroke="#c2410c" stroke-dasharray="4 4" opacity=".5"/><line x1="${P.l}" x2="${W-P.r}" y1="${sy(0)}" y2="${sy(0)}" stroke="#7a7a7a" stroke-dasharray="4 4" opacity=".6"/>`);
+  g.push(`<text x="${(P.l+W-P.r)/2}" y="${H-12}" text-anchor="middle" font-size="13" fill="#333">부채비율 →</text><text transform="translate(18 ${(P.t+H-P.b)/2}) rotate(-90)" text-anchor="middle" font-size="13" fill="#333">영업이익률 →</text>`);
+  g.push(`<text x="${sx(200)+6}" y="${P.t+12}" font-size="11" fill="#c2410c">부채비율 200%</text>`);
+  const dots=have.map(c=>`<g data-co="${c}"><circle class="sc-dot" r="10" fill="${PARENT[c]?'#4fa3f0':'#0066cc'}" fill-opacity=".78" stroke="#fff" stroke-width="2"></circle></g>`).join('');
+  const labs=have.map(c=>`<text class="sc-lab" data-co="${c}" font-size="12" fill="#1d1d1f" font-weight="600" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round">${c}</text>`).join('');
+  $('#sc').innerHTML=g.join('')+'<g id="leaders"></g>'+dots+'<g id="labs">'+labs+'</g>';
+}
+function renderScatter(){
+  const circ=[];
+  $$('#sc g[data-co]').forEach(g=>{
+    const c=g.dataset.co,m=D[c].y[Y],ci=g.querySelector('circle');
+    const x=sx(m.dr),y=sy(m.opm),r=sr(m.rev);
+    ci.setAttribute('cx',x);ci.setAttribute('cy',y);ci.setAttribute('r',r);circ.push({c,x,y,r});
+  });
+  // 라벨 배치: 원과 이미 놓인 라벨을 피해 오른쪽→왼쪽→위→아래→더 먼 오른쪽 순으로 시도
+  const boxes=circ.map(o=>({x0:o.x-o.r,x1:o.x+o.r,y0:o.y-o.r,y1:o.y+o.r}));
+  const hit=a=>a.x0<P.l||a.x1>W-P.r||a.y0<P.t||a.y1>H-P.b||boxes.some(b=>a.x0<b.x1&&a.x1>b.x0&&a.y0<b.y1&&a.y1>b.y0);
+  const lead=[];
+  circ.slice().sort((a,b)=>b.r-a.r).forEach(o=>{
+    const t=$(`#labs text[data-co="${o.c}"]`), w=(t.getComputedTextLength?t.getComputedTextLength():o.c.length*9)+4, h=14;
+    const cands=[[o.x+o.r+6,o.y+4,'start'],[o.x-o.r-6,o.y+4,'end'],[o.x,o.y-o.r-6,'middle'],[o.x,o.y+o.r+16,'middle']];
+    for(let k=1;k<=6;k++){cands.push([o.x+o.r+6,o.y+4+k*16,'start'],[o.x+o.r+6,o.y+4-k*16,'start'],[o.x-o.r-6,o.y+4+k*16,'end'],[o.x-o.r-6,o.y+4-k*16,'end'])}
+    let pick=cands[0];
+    for(const cd of cands){const [lx,ly,an]=cd;const x0=an==='start'?lx:an==='end'?lx-w:lx-w/2;const bx={x0,x1:x0+w,y0:ly-h+2,y1:ly+3};if(!hit(bx)){pick=cd;boxes.push(bx);break}}
+    t.setAttribute('x',pick[0]);t.setAttribute('y',pick[1]);t.setAttribute('text-anchor',pick[2]);
+    const dist=Math.hypot(pick[0]-o.x,pick[1]-4-o.y);
+    if(dist>o.r+24)lead.push(`<line x1="${o.x}" y1="${o.y}" x2="${pick[2]==='end'?pick[0]+2:pick[0]-2}" y2="${pick[1]-4}" stroke="#aeaeb2" stroke-width="1"/>`);
+  });
+  $('#leaders').innerHTML=lead.join('');
+}
+buildScatter();
+$('#sc').addEventListener('pointermove',e=>{const g=e.target.closest('[data-co]');if(!g){hideTip();return}const c=g.dataset.co,m=D[c].y[Y];showTip(e,`<b>${c} · ${Y}</b><div class="r"><span>매출</span><span class="num">${fj(m.rev)}조</span></div><div class="r"><span>영업이익률</span><span class="num">${fp(m.opm)}</span></div><div class="r"><span>부채비율</span><span class="num">${m.dr.toFixed(0)}%</span></div>${PARENT[c]?`<div class="r" style="color:#c2410c;margin-top:4px"><span>${PARENT[c]} 연결에 포함</span></div>`:''}`)});
+$('#sc').addEventListener('pointerleave',hideTip);
+$('#sc').addEventListener('click',e=>{const g=e.target.closest('[data-co]');if(g){selCo=g.dataset.co;renderHM();renderDetail();$('#detail').scrollIntoView({behavior:reduce?'auto':'smooth'})}});
+
+/* small multiples */
+function spark(vals,goodUp,fmt){
+  const w=100,h=30,mn=Math.min(...vals),mx=Math.max(...vals),rg=mx-mn||1;
+  const pts=vals.map((v,i)=>[i*50,h-3-(v-mn)/rg*(h-6)]);
+  const better=goodUp?vals[2]>=vals[0]:vals[2]<=vals[0];
+  const col=better?'#0066cc':'#c2410c';
+  return `<svg viewBox="-4 0 108 ${h}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#c7c7cc" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/><circle cx="${pts[2][0]}" cy="${pts[2][1]}" r="4" fill="${col}" stroke="#fff" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`;
+}
+function renderSM(){
+  $('#sm').innerHTML=have.map(c=>{const y=['2023','2024','2025'].map(k=>D[c].y[k]);
+    return `<div class="smc"><h3>${c}${PARENT[c]?`<span class="ov">${OVIC}${PARENT[c]}에 포함</span>`:''}</h3><div class="mini">
+      <div><small>매출(조원)</small><b class="num">${fj(y[2].rev)}</b>${spark(y.map(v=>v.rev),true)}</div>
+      <div><small>영업이익률</small><b class="num">${fp(y[2].opm)}</b>${spark(y.map(v=>v.opm),true)}</div>
+      <div><small>부채비율</small><b class="num">${y[2].dr.toFixed(0)}%</b>${spark(y.map(v=>v.dr),false)}</div></div></div>`}).join('');
+}
+
+/* detail */
+$('#dsel').innerHTML=ORDER.map(c=>`<button class="chip" type="button" data-co="${c}" ${D[c]?'':'disabled title="보고서 대기"'} aria-pressed="${c===selCo}">${c}</button>`).join('');
+$('#dsel').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b||b.disabled)return;selCo=b.dataset.co;renderHM();renderDetail()});
+function renderDetail(){
+  $$('#dsel .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.co===selCo));
+  const c=selCo,d=D[c],m=d.y[Y];
+  $('#dTitle').textContent=`${c}의 ${Y}년 재무구조.`;
+  const nca=m.asset-m.ca, ncl=m.liab-m.cl;
+  const seg=(v,col,lab,lt)=>`<div class="bsseg ${lt?'lt':''}" style="flex-grow:${Math.max(v,0)};background:${col}" title="${lab} ${fj(v)}조"><b class="num">${fj(v)}</b>${lab}</div>`;
+  const plMax=Math.max(Math.abs(m.rev),1);
+  const plRow=(lab,v,base)=>{const pct=v/base*100;const w=Math.min(100,Math.abs(pct));return `<div class="plrow"><span>${lab}</span><div class="bar"><span style="left:${v<0?0:0}%;width:${w}%;background:${v<0?'#c2410c':'#0066cc'};opacity:${lab==='매출'?.35:1}"></span></div><span class="v num">${fj(v)}조</span></div>`};
+  const cf=[['영업현금흐름',m.ocf],['유형자산 취득',-m.capex],['FCF',m.fcf]];
+  const cfMax=Math.max(...cf.map(x=>Math.abs(x[1])),1);
+  $('#dgrid').innerHTML=`
+  <div class="card"><h3>재무상태표</h3><p class="sub">왼쪽은 자산, 오른쪽은 부채와 자본. 높이는 금액 비례(조원).</p>
+    <div class="bsv"><div class="bscol"><div class="cap">자산 ${fj(m.asset)}조</div>${seg(m.ca,'#4fa3f0','유동자산')}${seg(nca,'#0066cc','비유동자산')}</div>
+    <div class="bscol"><div class="cap">부채 + 자본</div>${seg(m.cl,'#e3a27f','유동부채',1)}${seg(ncl,'#c2410c','비유동부채')}${seg(m.eq,'#1d1d1f','자본')}</div></div>
+    <div class="kvs"><div><small>부채비율</small><b class="num">${m.dr.toFixed(0)}%</b></div><div><small>유동비율</small><b class="num">${m.cr.toFixed(0)}%</b></div><div><small>순차입금비율</small><b class="num">${m.ndr.toFixed(0)}%</b></div></div>
+    <div class="dnote">${PARENT[c]?`<span class="ov">${OVIC}${PARENT[c]} 연결에 포함된 회사입니다. 금액을 ${PARENT[c]}와 더하지 마세요.</span><br>`:''}${d.n?d.n+'. ':''}${d.sub?'연결 종속회사 '+d.sub+'개(2025년말).':''}</div>
+  </div>
+  <div class="card"><h3>손익과 현금흐름</h3><p class="sub">막대 길이는 매출 대비 비율입니다.</p>
+    <div class="pl">${plRow('매출',m.rev,plMax)}${plRow('영업이익',m.op,plMax)}${plRow('순이익',m.ni,plMax)}</div>
+    <div class="kvs"><div><small>영업이익률</small><b class="num">${fp(m.opm)}</b></div><div><small>순이익률</small><b class="num">${fp(m.npm)}</b></div><div><small>ROE</small><b class="num">${fp(m.roe)}</b></div></div>
+    <h3 style="margin-top:22px;font-size:17px">현금흐름</h3>
+    <div class="pl" style="margin-top:8px">${cf.map(([l,v])=>`<div class="plrow"><span>${l}</span><div class="bar"><span style="left:0;width:${Math.abs(v)/cfMax*100}%;background:${v<0?'#c2410c':'#0066cc'}"></span></div><span class="v num">${fj(v)}조</span></div>`).join('')}</div>
+    <h3 style="margin-top:22px;font-size:17px">차입금 구성 · 2025년말</h3>
+    <ul class="dlist">${Object.entries(d.di).map(([k,v])=>`<li><span>${k}</span><span class="num">${fj(v)}조</span></li>`).join('')}<li style="font-weight:600"><span>총차입금 (${Y})</span><span class="num">${fj(m.debt)}조</span></li><li><span>현금성자산 + 단기금융상품 (${Y})</span><span class="num">${fj(m.cash+m.stfi)}조</span></li></ul>
+  </div>`;
+}
+
+/* year control */
+const setYear=seg($('#yearSeg'),v=>{Y=v;renderAll()});
+function renderAll(){renderKPI();renderHM();renderScatter();renderDetail()}
+renderAll();renderSM();
+$('#play').addEventListener('click',async()=>{for(const y of ['2023','2024','2025']){Y=y;setYear(y);renderAll();await new Promise(r=>setTimeout(r,reduce?50:1100))}});
+})();
+</script>
