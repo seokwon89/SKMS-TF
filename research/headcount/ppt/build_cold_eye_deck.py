@@ -22,17 +22,24 @@ for sldId in list(sldIdLst):
 
 LAYOUT = prs.slide_layouts[1]
 W = prs.slide_width
-NAVY = RGBColor(0x00, 0x20, 0x60)
-INK = RGBColor(0x1A, 0x1A, 0x1A)
-GRAY = RGBColor(0x7F, 0x7F, 0x7F)
-LGRAY = RGBColor(0xA6, 0xA6, 0xA6)
-LINE = RGBColor(0xBF, 0xBF, 0xBF)
-FILL = RGBColor(0xF2, 0xF2, 0xF2)
-BLUE = RGBColor(0x62, 0x9D, 0xD1)
-LBLUE = RGBColor(0xDE, 0xEB, 0xF7)
-RED = RGBColor(0xC0, 0x39, 0x2B)
-ORANGE = RGBColor(0xF2, 0x6B, 0x43)
+# 템플릿 실측 색상 (테마 dk2=0E2841, lt1=FFFFFF 기준 lumMod/lumOff 계산값 포함)
+NAVY = RGBColor(0x00, 0x20, 0x60)    # 제목 띠: srgbClr 002060
+ACCENT = RGBColor(0x21, 0x5F, 0x9A)  # 채움 태그·번호 배지·강조 글자: tx2 lumMod75 lumOff25
+INK = RGBColor(0x00, 0x00, 0x00)     # 본문: tx1 / prstClr black
+SUB = RGBColor(0x59, 0x59, 0x59)     # 보조 본문: tx1 lumMod65 lumOff35
+GRAY = RGBColor(0x80, 0x80, 0x80)    # 머리말 섹션명·각주: bg1 lumMod50
+LGRAY = RGBColor(0xA6, 0xA6, 0xA6)   # 열 제목 밑줄·간지 라벨: bg1 lumMod65
+PILLLINE = RGBColor(0xBF, 0xBF, 0xBF)  # 테두리 태그 선: bg1 lumMod75
+PILLTXT = RGBColor(0x40, 0x40, 0x40)   # 테두리 태그 글자: tx1 lumMod75 lumOff25
+FILL = RGBColor(0xF2, 0xF2, 0xF2)    # 표 머리·숫자 상자: bg1 lumMod95
+MIDGRAY = RGBColor(0xD9, 0xD9, 0xD9) # 중립 상태 칸: bg1 lumMod85
+LBLUE = RGBColor(0xDC, 0xEA, 0xF7)   # 연한 강조 상자: tx2 lumMod10 lumOff90
+BAR = RGBColor(0xA1, 0xC4, 0xE3)     # 차트 막대: accent2(629DD1, themeOverride) lumMod60 lumOff40
+RED = RGBColor(0xC0, 0x00, 0x00)     # 부정 수치·경고: srgbClr C00000
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+LINE = LGRAY
+BLUE = BAR
+ORANGE = RED
 F_R, F_B, F_X = "나눔스퀘어", "나눔스퀘어 Bold", "나눔스퀘어 ExtraBold"
 
 
@@ -87,7 +94,7 @@ def tb(slide, x, y, w, h, paras, align=PP_ALIGN.LEFT, anchor=MSO_ANCHOR.TOP, mar
     return box
 
 
-def rect(slide, x, y, w, h, fill=None, line=None, shape=MSO_SHAPE.RECTANGLE, lw=0.75, name=None):
+def rect(slide, x, y, w, h, fill=None, line=None, shape=MSO_SHAPE.RECTANGLE, lw=0.75, name=None, radius=0.16667):
     s = slide.shapes.add_shape(shape, Inches(x), Inches(y), Inches(w), Inches(h))
     if name:
         s.name = name
@@ -101,7 +108,7 @@ def rect(slide, x, y, w, h, fill=None, line=None, shape=MSO_SHAPE.RECTANGLE, lw=
         s.line.color.rgb = line; s.line.width = Pt(lw)
     s.shadow.inherit = False
     if shape == MSO_SHAPE.ROUNDED_RECTANGLE:
-        s.adjustments[0] = 0.5
+        s.adjustments[0] = radius  # 템플릿: 채움 태그·배지 기본값 0.16667, 테두리 태그 0.19092
     s.text_frame.text = ""
     return s
 
@@ -122,13 +129,18 @@ def new_slide():
 page = [0]
 
 
+SLDNUM = next(ph for ph in LAYOUT.placeholders if ph.placeholder_format.type == 13)  # PP_PLACEHOLDER.SLIDE_NUMBER
+
+
 def pageno(s):
+    """레이아웃의 슬라이드 번호 개체틀을 그대로 복제해 템플릿 서식(위치·크기·색)을 쓴다."""
     page[0] += 1
-    tb(s, 10.2, 7.13, 0.5, 0.25, [[(str(page[0]), F_R, 8, GRAY, False)]], align=PP_ALIGN.RIGHT, name="Page number")
+    el = copy.deepcopy(SLDNUM._element)
+    s.shapes._spTree.append(el)
 
 
 def header(s, section, sub):
-    tb(s, 0.3, 0.22, 9.8, 0.42, [[(section, F_R, 18, LGRAY, False), ("   |   ", F_R, 18, INK, False), (sub, F_R, 18, INK, False)]], name="Header")
+    tb(s, 0.3, 0.2, 9.8, 0.42, [[(section + "  ", F_X, 18, GRAY, False), ("|  ", F_X, 18, INK, False), (sub, F_X, 18, INK, False)]], name="Header", margin=0)
 
 
 def headline(s, text, y=0.82):
@@ -136,17 +148,17 @@ def headline(s, text, y=0.82):
 
 
 def source(s, text):
-    tb(s, 0.3, 7.1, 9.6, 0.28, [[(text, F_R, 7.5, GRAY, False)]], name="Source")
+    tb(s, 0.3, 6.98, 7.2, 0.4, [[(text, F_R, 7.5, GRAY, False)]], name="Source", anchor=MSO_ANCHOR.BOTTOM)
 
 
 def pill(s, x, y, w, text, filled=False):
     if filled:
-        r = rect(s, x, y, w, 0.26, fill=NAVY, shape=MSO_SHAPE.ROUNDED_RECTANGLE)
+        r = rect(s, x, y, w, 0.24, fill=ACCENT, shape=MSO_SHAPE.ROUNDED_RECTANGLE)
         col = WHITE
     else:
-        r = rect(s, x, y, w, 0.26, fill=WHITE, line=LGRAY, shape=MSO_SHAPE.ROUNDED_RECTANGLE)
-        col = INK
-    tb(s, x, y, w, 0.26, [[(text, F_B, 9.5, col, True)]], align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, margin=0)
+        r = rect(s, x, y, w, 0.24, fill=WHITE, line=PILLLINE, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.19092)
+        col = PILLTXT
+    tb(s, x, y, w, 0.24, [[(text, F_B, 9.5, col, True)]], align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, margin=0)
 
 
 def col_title(s, x, w, y, text):
@@ -154,7 +166,7 @@ def col_title(s, x, w, y, text):
     hline(s, x, y + 0.36, w, LINE, 1.0)
 
 
-STATUS = {"ok": ("진전", NAVY, WHITE), "mid": ("미확인", RGBColor(0xD9, 0xD9, 0xD9), INK), "no": ("미달·괴리", ORANGE, WHITE)}
+STATUS = {"ok": ("진전", ACCENT, WHITE), "mid": ("미확인", MIDGRAY, INK), "no": ("미달·괴리", RED, WHITE)}
 
 # ---------------------------------------------------------------- slides
 # 1. Cover
@@ -176,7 +188,7 @@ pageno(s)
 s = new_slide()
 header(s, "총평", "부문별 성적표")
 headline(s, "정유는 펌프, 윤활유·E&S는 금고, 배터리는 블랙홀. 2026년 반등은 유가·보상금 효과를 걷어내고 봐야 한다")
-kp = [("80.3조", "연결 매출 ('25)", INK), ("0.45조", "연결 영업이익 (이익률 0.6%)", INK), ("−3.35조", "지배주주 순손실 ('25)", RED), ("5.6조", "'26 상반기 영업이익 (보도)", NAVY)]
+kp = [("80.3조", "연결 매출 ('25)", INK), ("0.45조", "연결 영업이익 (이익률 0.6%)", INK), ("−3.35조", "지배주주 순손실 ('25)", RED), ("5.6조", "'26 상반기 영업이익 (보도)", ACCENT)]
 for i, (v, l, c) in enumerate(kp):
     x = 0.3 + i * 2.58
     rect(s, x, 1.45, 2.45, 0.85, fill=FILL)
@@ -243,8 +255,8 @@ def segment(name, headline_txt, stats, goals, reviews, ceos, msg, pull, src, sec
     for i, (v, l, neg) in enumerate(stats):
         x = LX + i * (sw + 0.1)
         rect(s, x, 1.95, sw, 0.82, fill=FILL)
-        tb(s, x, 1.98, sw, 0.42, [[(v, F_X, 17, RED if neg else NAVY, True)]], align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
-        tb(s, x + 0.04, 2.38, sw - 0.08, 0.38, [[(l, F_R, 8.5, GRAY, False)]], align=PP_ALIGN.CENTER)
+        tb(s, x, 1.98, sw, 0.42, [[(v, F_X, 17, RED if neg else ACCENT, True)]], align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
+        tb(s, x + 0.04, 2.38, sw - 0.08, 0.38, [[(l, F_R, 8.5, SUB, False)]], align=PP_ALIGN.CENTER)
     pill(s, LX, 2.95, 1.35, "회사가 내건 목표")
     gp = []
     for t, src_ in goals:
@@ -260,7 +272,7 @@ def segment(name, headline_txt, stats, goals, reviews, ceos, msg, pull, src, sec
             para._p.get_or_add_pPr().set("marL", str(int(Inches(0.16))))
     # pull quote
     rect(s, LX, 6.08, LW, 0.85, fill=LBLUE)
-    tb(s, LX + 0.15, 6.08, LW - 0.3, 0.85, [[("“ " + pull + " ”", F_B, 11.5, NAVY, True)]], anchor=MSO_ANCHOR.MIDDLE)
+    tb(s, LX + 0.15, 6.08, LW - 0.3, 0.85, [[("“ " + pull + " ”", F_B, 11.5, ACCENT, True)]], anchor=MSO_ANCHOR.MIDDLE)
     # right: review table
     pill(s, RX, 1.95, 1.35, "목표 대비 판정", filled=True)
     n = len(reviews)
@@ -283,10 +295,10 @@ def segment(name, headline_txt, stats, goals, reviews, ceos, msg, pull, src, sec
             set_font(r, face, sz, col, b)
     ty = 2.28 + rh * n + 0.15
     pill(s, RX, ty, 1.35, "내가 CEO라면", filled=True)
-    cp = [{"runs": [(f"{k+1}. ", F_X, 10.5, NAVY, True), (c_, F_R, 10.5, INK, False)], "space": 5} for k, c_ in enumerate(ceos)]
+    cp = [{"runs": [(f"{k+1}. ", F_X, 10.5, ACCENT, True), (c_, F_R, 10.5, INK, False)], "space": 5} for k, c_ in enumerate(ceos)]
     tb(s, RX, ty + 0.32, RW, 6.0 - (ty + 0.32), cp)
-    rect(s, RX, 6.08, RW, 0.85, fill=NAVY)
-    tb(s, RX + 0.15, 6.08, RW - 0.3, 0.85, [{"runs": [("CEO 메시지", F_B, 9, RGBColor(0xBF, 0xCF, 0xE8), True)], "space": 3}, [(msg, F_X, 11.5, WHITE, True)]], anchor=MSO_ANCHOR.MIDDLE)
+    rect(s, RX, 6.08, RW, 0.85, fill=ACCENT)
+    tb(s, RX + 0.15, 6.08, RW - 0.3, 0.85, [{"runs": [("CEO 메시지", F_B, 9, LBLUE, True)], "space": 3}, [(msg, F_X, 11.5, WHITE, True)]], anchor=MSO_ANCHOR.MIDDLE)
     source(s, src)
     pageno(s)
     return s
@@ -324,7 +336,7 @@ cd2 = CategoryChartData()
 cd2.categories = ["석유사업", "화학사업", "윤활유사업", "기타(잔여)", "내부거래 제거"]
 cd2.add_series("매출(조원)", (47.2, 8.9, 3.8, 1.4, 73.3))
 ch2 = s.shapes.add_chart(XL_CHART_TYPE.BAR_CLUSTERED, Inches(5.55), Inches(1.9), Inches(4.98), Inches(3.6), cd2).chart
-for c_, colors in ((ch, [NAVY, NAVY, BLUE, BLUE, LGRAY]), (ch2, [NAVY, BLUE, BLUE, LGRAY, RGBColor(0xD9, 0xD9, 0xD9)])):
+for c_, colors in ((ch, [ACCENT, ACCENT, BAR, BAR, PILLLINE]), (ch2, [ACCENT, BAR, BAR, PILLLINE, MIDGRAY])):
     c_.has_legend = False
     c_.has_title = False
     plot = c_.plots[0]
@@ -443,7 +455,7 @@ checks = [("재고효과를 뺀 정유 이익", "유가가 꺾이는 분기에 �
           ("추가 손상과 매각 일정", "SK지오센트릭 해외 법인, SK온 해외 공장")]
 for i, (t_, d_) in enumerate(checks):
     y = 1.98 + i * 0.95
-    rect(s, 0.3, y, 0.42, 0.42, fill=NAVY)
+    rect(s, 0.3, y, 0.42, 0.42, fill=ACCENT, shape=MSO_SHAPE.ROUNDED_RECTANGLE)
     tb(s, 0.3, y, 0.42, 0.42, [[(str(i + 1), F_X, 14, WHITE, True)]], align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, margin=0)
     tb(s, 0.85, y - 0.03, 4.4, 0.8, [{"runs": [(t_, F_B, 11, INK, True)], "space": 2}, [(d_, F_R, 9.5, GRAY, False)]])
 msgs = [("석유", "유가가 준 이익은 유가가 가져간다. 우리가 통제하는 마진만 우리 실적이다"),
@@ -456,7 +468,7 @@ t = s.shapes.add_table(len(msgs), 2, Inches(5.55), Inches(1.98), Inches(4.98), I
 t.columns[0].width = Inches(0.95); t.columns[1].width = Inches(4.03)
 for i, (a, b) in enumerate(msgs):
     t.rows[i].height = Inches(0.72)
-    for j, (v, face, col, fillc) in enumerate([(a, F_X, WHITE, NAVY), (b, F_B, INK, WHITE if i % 2 else FILL)]):
+    for j, (v, face, col, fillc) in enumerate([(a, F_X, WHITE, ACCENT), (b, F_B, INK, WHITE if i % 2 else FILL)]):
         c = t.cell(i, j); c.fill.solid(); c.fill.fore_color.rgb = fillc
         c.vertical_anchor = MSO_ANCHOR.MIDDLE; c.margin_left = c.margin_right = Inches(0.08)
         p = c.text_frame.paragraphs[0]; c.text_frame.word_wrap = True
